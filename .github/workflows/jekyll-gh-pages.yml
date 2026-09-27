@@ -1,8 +1,8 @@
-name: Deploy static content to Pages
+name: Deploy Sotool Store to GitHub Pages
 
 on:
   push:
-    branches: ["main"] # أو غيّرها إلى master إذا كان فرعك الرئيسي هو master
+    branches: ["main"] # عدلها إلى master إذا كان فرعك الرئيسي هو master
   workflow_dispatch:
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # حددنا هنا اسم المجلد الذي يحتوي على ملف index.html الخاص بك
+          # هذا السطر يوجه جيت هوب لأخذ الملفات من مجلد public مباشرة
           path: './public'
       
       - name: Deploy to GitHub
