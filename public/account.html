@@ -17,7 +17,7 @@
 <p id="accountEmail" style="color:#aaa"></p>
 <button class="main-btn" id="logoutButton" type="button">تسجيل الخروج</button>
 </div>
-<a class="back-store" href="/">العودة إلى المتجر</a>
+<a class="back-store" href="./">العودة إلى المتجر</a>
 </div>
 </section>
 </main>
@@ -25,17 +25,17 @@
 (async()=>{
  const status=document.getElementById('accountStatus'), info=document.getElementById('accountInfo');
  try{
-  const r=await fetch('/api/auth/me',{credentials:'include'});
+  const r=await fetch('https://sotool-store.onrender.com/api/auth/me',{credentials:'include'});
   const d=await r.json();
   if(!r.ok) throw new Error(d.message||'غير مسجل الدخول');
   document.getElementById('accountName').textContent=d.user.name;
   document.getElementById('accountEmail').textContent=d.user.email;
   status.textContent='تم تسجيل الدخول بنجاح.';
   info.style.display='block';
- }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='/login.html',1000); }
+ }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='login.html',1000); }
  document.getElementById('logoutButton').onclick=async()=>{
-  await fetch('/api/auth/logout',{method:'POST',credentials:'include'});
-  location.href='/login.html';
+  await fetch('https://sotool-store.onrender.com/api/auth/logout',{method:'POST',credentials:'include'});
+  location.href='login.html';
  };
 })();
 </script>

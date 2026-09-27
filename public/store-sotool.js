@@ -8,18 +8,18 @@
 
       try {
         // التحقق من الجلسة الحالية من الخادم
-        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        const response = await fetch('https://sotool-store.onrender.com/api/auth/me', { credentials: 'include' });
         
         if (response.ok) {
           // إذا كان مسجلاً للدخول -> تحويل لصفحة الحساب
-          window.location.href = '/account.html';
+          window.location.href = 'account.html';
         } else {
           // إذا لم يكن مسجلاً -> تحويل لصفحة تسجيل الدخول
-          window.location.href = '/login.html';
+          window.location.href = 'login.html';
         }
       } catch (error) {
         // في حال وجود خطأ بالشبكة -> تحويل لصفحة الدخول كخيار آمن
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
       }
     });
   }

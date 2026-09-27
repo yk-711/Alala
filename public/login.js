@@ -1,4 +1,4 @@
-const API_BASE = ""; // الـAPI يعمل من نفس نطاق الموقع على Render
+const API_BASE = "https://sotool-store.onrender.com"; // الـAPI يعمل من نفس نطاق الموقع على Render
 
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
@@ -68,7 +68,7 @@ loginForm.addEventListener("submit", async event => {
 
     // عدّل المسار حسب موقع الصفحة الرئيسية في مشروعك.
     if (data.user) {
-      window.location.href = data.redirect || "/account.html";
+      window.location.href = 'account.html';
     }
   } catch (error) {
     showMessage("loginMessage", error.message, "error");
@@ -138,7 +138,7 @@ async function forgotPassword() {
 document.getElementById("forgotButton").addEventListener("click", forgotPassword);
 
 function startGoogleAuth() {
-  window.location.href = "/api/auth/google";
+  window.location.href = "https://sotool-store.onrender.com/api/auth/google";
 }
 
 const googleButton = document.getElementById("googleLoginButton");

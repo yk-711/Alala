@@ -5,8 +5,9 @@
   let products=[], categories=[], imageData='';
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   function message(t,error=false){msg.textContent=t||'';msg.className='message '+(error?'error':'');}
-  async function api(url,options={}){const r=await fetch(url,{credentials:'include',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||'حدث خطأ.');return d;}
-  async function boot(){try{await api('/api/admin/me');guard.classList.add('hidden');panel.classList.remove('hidden');await Promise.all([loadProducts(),loadCategories(),githubStatus()]);renderChecks();}catch(e){guard.innerHTML='<h1>غير مصرح بالدخول</h1><p>سجلي الدخول بحساب المدير المحدد في ADMIN_EMAIL.</p><a class="primary" href="/login.html">تسجيل الدخول</a>';}}
+  const API_BASE='https://sotool-store.onrender.com';
+  async function api(url,options={}){const target=url.startsWith('http')?url:API_BASE+url;const r=await fetch(target,{credentials:'include',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||'حدث خطأ.');return d;}
+  async function boot(){try{await api('/api/admin/me');guard.classList.add('hidden');panel.classList.remove('hidden');await Promise.all([loadProducts(),loadCategories(),githubStatus()]);renderChecks();}catch(e){guard.innerHTML='<h1>غير مصرح بالدخول</h1><p>سجلي الدخول بحساب المدير المحدد في ADMIN_EMAIL.</p><a class="primary" href="login.html">تسجيل الدخول</a>';}}
   async function loadProducts(){products=(await api('/api/admin/products')).products||[];renderProducts();}
   async function loadCategories(){categories=(await api('/api/admin/categories')).categories||[];renderCategories();renderChecks();}
   async function githubStatus(){try{const d=await api('/api/admin/github/status');$('githubStatus').innerHTML=d.connected?`<span class="dot ok"></span> GitHub متصل: ${esc(d.repository)} / ${esc(d.branch)}`:`<span class="dot"></span> GitHub غير مكتمل الإعداد في الخادم.`;}catch(e){$('githubStatus').textContent=e.message;}}
@@ -28,6 +29,6 @@
   async function publish(){try{message('جاري مزامنة GitHub…');await api('/api/admin/github/publish',{method:'POST'});message('تمت مزامنة المنتجات والأقسام مع GitHub.');await githubStatus()}catch(e){message(e.message,true)}}
   $('publishGithub').onclick=publish;$('publishGithub2').onclick=publish;
   document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));t.classList.add('active');$(t.dataset.tab).classList.add('active')});
-  $('logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});location.href='/login.html'};
+  $('logout').onclick=async()=>{await fetch(`${API_BASE}/api/auth/logout`,{method:'POST',credentials:'include'});location.href='login.html'};
   boot();
 })();
