@@ -1,0 +1,3015 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="متجر سطول للسيدات والأطفال"><title>متجر سطول | متجر السيدات والأطفال</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="store-sotool.css"><script src="https://unpkg.com/lucide@latest"></script>
+<style id="transparent-nav-controls">
+#navmenu, #navmenu.navbar-collapse, #currencyToggle, #currencySelect {
+  background: transparent !important;
+}
+#currencyToggle:hover, #currencyToggle:focus, #currencyToggle:focus-visible, #currencyToggle:active {
+  background: transparent !important;
+}
+#currencyToggle {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+</style>
+</head><body dir="rtl">
+
+<nav class="navbar sotool-modern-navbar" id="nav" aria-label="القائمة الرئيسية">
+  <div class="nav-left">
+    <button class="nav-cart-button" id="cartFab" type="button" title="السلة" aria-label="فتح السلة">
+      <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+      <span id="cartCount">0</span>
+    </button>
+
+    <button id="navSearchBtn" class="header-search-button" type="button" title="فتح البحث" aria-label="فتح البحث">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+
+    <button id="currencyToggle" class="currency-toggle" type="button" aria-label="تغيير العملة">
+      <span class="currency-icon">$</span>
+      <span id="currencyShort">SAR</span>
+    </button>
+    <select id="currencySelect" class="currency-hidden" aria-label="اختيار العملة">
+      <option value="sar">ريال سعودي</option>
+      <option value="yer">ريال يمني</option>
+      <option value="usd">دولار أمريكي</option>
+    </select>
+  </div>
+
+  <div class="nav-right">
+    <a class="modern-logo" href="/" aria-label="متجر سطول">
+      <span class="logo-text">Lhat</span>
+    </a>
+
+    <button class="navbar-toggler modern-menu-button" id="modernMenuButton" data-bs-target="#navmenu" type="button" aria-label="فتح القائمة" aria-expanded="false">
+      <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div class="collapse navbar-collapse modern-nav-collapse" id="navmenu">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item"><a class="nav-link active" href="/">الرئيسية</a></li>
+      <li class="nav-item"><a class="nav-link" href="/products-page.html">المنتجات</a></li>
+      <li class="nav-item"><a class="nav-link" href="/categories.html">الأقسام</a></li>
+    </ul>
+    <div class="d-flex align-items-center gap-1">
+      <a class="nav-link nav-cta" href="#" id="accountBtn">حسابي</a>
+      <a class="nav-link nav-cta" href="/cart.html"><i class="fas fa-shopping-bag me-1"></i>السلة</a>
+      <a class="nav-link nav-cta" href="/wishlist.html"><i class="fas fa-heart me-1"></i>الأمنيات</a>
+    </div>
+  </div>
+</nav><div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+
+<div id="searchOv">
+<button class="sovclose" id="searchClose"><i class="fas fa-times"></i></button>
+<div class="sovbox">
+<h4>ما الذي تبحثين عنه اليوم؟</h4>
+<div class="sovinput">
+<input autocomplete="off" id="searchInput" placeholder="ابحثي عن عباية أو فئة..." type="text"/>
+<button><i class="fas fa-search"></i></button>
+</div>
+
+<div id="searchStatus" class="search-status">اكتبي اسم المنتج أو الفئة للبحث السريع</div><div class="sovcats">
+<div class="sovcat active" data-cat="all">
+<img alt="" src="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900"/>كل المنتجات
+               </div>
+<div class="sovcat" data-cat="burgers">
+<img alt="" src="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900"/>للسيدات
+               </div>
+<div class="sovcat" data-cat="pizza">
+<img alt="" src="https://images.pexels.com/photos/13791266/pexels-photo-13791266.jpeg?auto=compress&cs=tinysrgb&w=900"/>للأطفال
+               </div>
+<div class="sovcat" data-cat="chicken">
+<img alt="" src="https://images.pexels.com/photos/13862203/pexels-photo-13862203.jpeg?auto=compress&cs=tinysrgb&w=900"/>فساتين
+               </div>
+<div class="sovcat" data-cat="wraps">
+<img alt="" src="https://images.pexels.com/photos/13838837/pexels-photo-13838837.jpeg?auto=compress&cs=tinysrgb&w=900"/>أطقم
+               </div>
+<div class="sovcat" data-cat="pasta">
+<img alt="" src="https://images.pexels.com/photos/33537065/pexels-photo-33537065.jpeg?auto=compress&cs=tinysrgb&w=900"/>إكسسوارات
+               </div>
+<div class="sovcat" data-cat="desserts">
+<img alt="" src="https://images.pexels.com/photos/37558001/pexels-photo-37558001.jpeg?auto=compress&cs=tinysrgb&w=900"/>عروض خاصة
+               </div>
+</div>
+<div class="sovtrend">
+<p><i class="fas fa-fire me-1" style="color:var(--secondary);"></i>عمليات البحث الرائجة</p>
+<span class="ttag">عباية يومية</span>
+<span class="ttag">Nashville فساتين</span>
+<span class="ttag">Truffle للأطفال</span>
+<span class="ttag">إكسسارات شعر</span>
+<span class="ttag">عروض سطول</span>
+<span class="ttag">هدايا الصغار</span>
+</div>
+</div>
+</div>
+
+
+<!-- SOTOOL IMAGE SLIDER -->
+<link rel="stylesheet" href="slider-addon/slider-addon.css">
+<div class="sotool-slider-addon" id="sotoolImageSlider" aria-label="سلايدر العروض والصور">
+  <div class="sotool-slider-addon__track">
+    <div class="sotool-slider-addon__slide"><img src="slider-addon/images/banner1.jpg" alt="العرض الأول"></div>
+    <div class="sotool-slider-addon__slide"><img src="slider-addon/images/banner2.jpg" alt="العرض الثاني"></div>
+    <div class="sotool-slider-addon__slide"><img src="slider-addon/images/banner3.jpg" alt="العرض الثالث"></div>
+    <div class="sotool-slider-addon__slide"><img src="slider-addon/images/banner4.jpg" alt="العرض الرابع"></div>
+  </div>
+  <button class="sotool-slider-addon__arrow sotool-slider-addon__prev" type="button" aria-label="الصورة السابقة">❯</button>
+  <button class="sotool-slider-addon__arrow sotool-slider-addon__next" type="button" aria-label="الصورة التالية">❮</button>
+  <div class="sotool-slider-addon__dots" aria-label="اختيار الصورة"></div>
+</div>
+<script src="slider-addon/slider-addon.js"></script>
+
+<link rel="stylesheet" href="shop.css">
+<section class="shop-wrap" id="sutoolSelectedSection" dir="rtl">
+  <div class="section-heading">
+    <div><span class="shop-kicker">SOTOOL PICKS</span><h2>منتجات مختارة</h2></div>
+    <a href="/products-page.html">عرض الكل ←</a>
+  </div>
+  <div class="selected-slider">
+    <button class="selected-arrow selected-prev" type="button" aria-label="السابق">❯</button>
+    <div class="selected-track" id="selectedTrack"></div>
+    <button class="selected-arrow selected-next" type="button" aria-label="التالي">❮</button>
+  </div>
+</section>
+<script src="shop.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>{document.querySelector('.selected-prev')?.addEventListener('click',()=>document.getElementById('selectedTrack')?.scrollBy({left:-300,behavior:'smooth'}));document.querySelector('.selected-next')?.addEventListener('click',()=>document.getElementById('selectedTrack')?.scrollBy({left:300,behavior:'smooth'}));});</script>
+
+<div class="black-space" aria-hidden="true"></div>
+
+<style>
+  .black-space {
+    width: 100%;
+    height: 40px;
+  
+  background: #070707 url("../assets/login-background.jpg") center / cover fixed no-repeat !important;
+}
+
+  }
+
+  @media (max-width: 576px) {
+    .black-space {
+      height: 24px;
+    }
+  }
+</style>
+
+
+
+
+<style>
+
+/* =========================================================
+   متغيرات التصميم
+========================================================= */
+
+#sutool-selected-products {
+
+  --sutool-black:
+    #111111;
+
+  --sutool-black-light:
+    #242424;
+
+  --sutool-gold:
+    #b18b4c;
+
+  --sutool-gold-light:
+    #d5b56e;
+
+  --sutool-gold-dark:
+    #8f6b32;
+
+  --sutool-white:
+    #ffffff;
+
+  --sutool-text:
+    #333333;
+
+  --sutool-gray:
+    #888888;
+
+}
+
+
+/* =========================================================
+   القسم
+========================================================= */
+
+.sutool-selected-products {
+
+  width: 100%;
+
+  max-width: 1450px;
+
+  margin:
+    30px auto;
+
+  padding:
+    0 10px;
+
+  box-sizing:
+    border-box;
+
+}
+
+
+/* =========================================================
+   عنوان القسم
+========================================================= */
+
+.sutool-section-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+
+  padding:
+    0 5px;
+
+}
+
+
+.sutool-section-label {
+
+  display: block;
+
+  margin-bottom: 4px;
+
+  color:
+    var(--sutool-gold);
+
+  font-size:
+    14px;
+
+  font-weight:
+    700;
+
+}
+
+
+.sutool-section-header h2 {
+
+  margin:
+    0;
+
+  color:
+    var(--sutool-black);
+
+  font-size:
+    28px;
+
+  font-weight:
+    800;
+
+}
+
+
+/* =========================================================
+   شبكة المنتجات
+
+   صورتان بجانب بعض
+========================================================= */
+
+.sutool-products-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap:
+    18px;
+
+  width:
+    100%;
+
+}
+
+
+/* =========================================================
+   بطاقة المنتج
+
+   3 حواف مستديرة
+   وحافة علوية يسرى حادة
+========================================================= */
+
+.sutool-product-card {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  width:
+    100%;
+
+  background:
+    var(--sutool-white);
+
+  border:
+    1px solid rgba(
+      177,
+      139,
+      76,
+      .20
+    );
+
+  border-radius:
+    0 42px 42px 42px;
+
+  box-shadow:
+    0 5px 22px
+    rgba(
+      0,
+      0,
+      0,
+      .09
+    );
+
+  box-sizing:
+    border-box;
+
+}
+
+
+/* =========================================================
+   منطقة الصورة
+========================================================= */
+
+.sutool-product-image {
+
+  position:
+    relative;
+
+  width:
+    100%;
+
+  aspect-ratio:
+    .78;
+
+  overflow:
+    hidden;
+
+  background:
+    #151515;
+
+}
+
+
+/* صورة المنتج */
+
+.sutool-product-image img {
+
+  display:
+    block;
+
+  width:
+    100%;
+
+  height:
+    100%;
+
+  object-fit:
+    cover;
+
+}
+
+
+/* =========================================================
+   الشارات
+========================================================= */
+
+.sutool-product-badges {
+
+  position:
+    absolute;
+
+  top:
+    15px;
+
+  right:
+    14px;
+
+  z-index:
+    10;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    flex-start;
+
+  gap:
+    8px;
+
+}
+
+
+/* الشارة الأساسية */
+
+.sutool-product-badge {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-height:
+    40px;
+
+  padding:
+    7px 18px;
+
+  border-radius:
+    25px;
+
+  font-size:
+    15px;
+
+  font-weight:
+    700;
+
+  white-space:
+    nowrap;
+
+  box-shadow:
+    0 3px 10px
+    rgba(
+      0,
+      0,
+      0,
+      .18
+    );
+
+}
+
+
+/* =========================================================
+   شارة تباع سريعاً
+========================================================= */
+
+.sutool-badge-fast {
+
+  background:
+    var(--sutool-black);
+
+  color:
+    var(--sutool-gold-light);
+
+  border:
+    1px solid
+    var(--sutool-gold);
+
+}
+
+
+/* =========================================================
+   شارة كمية محدودة
+========================================================= */
+
+.sutool-badge-limited {
+
+  background:
+    var(--sutool-gold);
+
+  color:
+    #ffffff;
+
+  border:
+    1px solid
+    var(--sutool-gold-light);
+
+}
+
+
+/* =========================================================
+   شارة جديد
+========================================================= */
+
+.sutool-badge-new {
+
+  background:
+    var(--sutool-black);
+
+  color:
+    var(--sutool-gold-light);
+
+  border:
+    1px solid
+    var(--sutool-gold);
+
+}
+
+
+/* =========================================================
+   شارة الأكثر مبيعاً
+========================================================= */
+
+.sutool-badge-best {
+
+  background:
+    var(--sutool-gold);
+
+  color:
+    var(--sutool-black);
+
+}
+
+
+/* =========================================================
+   شارة عرض خاص
+========================================================= */
+
+.sutool-badge-offer {
+
+  background:
+    var(--sutool-black);
+
+  color:
+    var(--sutool-gold-light);
+
+  border:
+    1px solid
+    var(--sutool-gold);
+
+}
+
+
+/* =========================================================
+   زر المفضلة
+========================================================= */
+
+.sutool-favorite {
+
+  position:
+    absolute;
+
+  top:
+    15px;
+
+  left:
+    14px;
+
+  z-index:
+    11;
+
+  width:
+    58px;
+
+  height:
+    58px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    0;
+
+  border:
+    none;
+
+  border-radius:
+    14px;
+
+  background:
+    #ffffff;
+
+  color:
+    #626a70;
+
+  font-size:
+    34px;
+
+  line-height:
+    1;
+
+  cursor:
+    pointer;
+
+  box-shadow:
+    0 3px 12px
+    rgba(
+      0,
+      0,
+      0,
+      .12
+    );
+
+}
+
+
+/* المفضلة بعد الاختيار */
+
+.sutool-favorite.active {
+
+  color:
+    var(--sutool-gold);
+
+}
+
+
+/* =========================================================
+   معلومات المنتج
+========================================================= */
+
+.sutool-product-info {
+
+  width:
+    100%;
+
+  padding:
+    15px 15px 0;
+
+  box-sizing:
+    border-box;
+
+  text-align:
+    right;
+
+  background:
+    #ffffff;
+
+}
+
+
+/* =========================================================
+   اسم المنتج
+========================================================= */
+
+.sutool-product-name {
+
+  color:
+    var(--sutool-text);
+
+  font-size:
+    20px;
+
+  font-weight:
+    800;
+
+  line-height:
+    1.55;
+
+  min-height:
+    63px;
+
+  display:
+    -webkit-box;
+
+  -webkit-line-clamp:
+    2;
+
+  -webkit-box-orient:
+    vertical;
+
+  overflow:
+    hidden;
+
+}
+
+
+/* =========================================================
+   الأسعار
+========================================================= */
+
+.sutool-product-price {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    8px;
+
+  margin-top:
+    13px;
+
+}
+
+
+/* السعر الحالي */
+
+.sutool-current-price {
+
+  color:
+    var(--sutool-gold);
+
+  font-size:
+    29px;
+
+  font-weight:
+    900;
+
+}
+
+
+/* رمز العملة */
+
+.sutool-currency {
+
+  font-size:
+    18px;
+
+  font-weight:
+    800;
+
+}
+
+
+/* السعر القديم */
+
+.sutool-old-price {
+
+  color:
+    #333333;
+
+  font-size:
+    17px;
+
+  text-decoration:
+    line-through;
+
+}
+
+
+/* الخصم */
+
+.sutool-discount {
+
+  color:
+    var(--sutool-gold);
+
+  font-size:
+    15px;
+
+  font-weight:
+    800;
+
+}
+
+
+/* =========================================================
+   الخيارات
+========================================================= */
+
+.sutool-product-options {
+
+  color:
+    var(--sutool-gray);
+
+  text-align:
+    center;
+
+  font-size:
+    15px;
+
+  margin:
+    11px 0 15px;
+
+}
+
+
+/* =========================================================
+   زر أضف إلى السلة
+========================================================= */
+
+.sutool-cart-button {
+
+  width:
+    100%;
+
+  height:
+    62px;
+
+  border:
+    0;
+
+  border-top:
+    1px solid
+    rgba(
+      177,
+      139,
+      76,
+      .45
+    );
+
+  border-radius:
+    34px 34px 0 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #111111 0%,
+      #272727 50%,
+      #111111 100%
+    );
+
+  color:
+    var(--sutool-gold-light);
+
+  font-family:
+    inherit;
+
+  font-size:
+    20px;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+
+  transition:
+    .25s ease;
+
+}
+
+
+/* عند مرور الماوس */
+
+.sutool-cart-button:hover {
+
+  background:
+    linear-gradient(
+      135deg,
+      #8f6b32 0%,
+      #d5b56e 50%,
+      #8f6b32 100%
+    );
+
+  color:
+    #111111;
+
+}
+
+
+/* =========================================================
+   حالة الضغط
+========================================================= */
+
+.sutool-cart-button:active {
+
+  transform:
+    scale(.98);
+
+}
+
+
+/* =========================================================
+   الجوال
+========================================================= */
+
+@media (max-width: 600px) {
+
+
+  .sutool-selected-products {
+
+    padding:
+      0 6px;
+
+  }
+
+
+  .sutool-products-grid {
+
+    gap:
+      9px;
+
+  }
+
+
+  .sutool-section-header h2 {
+
+    font-size:
+      21px;
+
+  }
+
+
+  .sutool-section-label {
+
+    font-size:
+      12px;
+
+  }
+
+
+  /* البطاقة */
+
+  .sutool-product-card {
+
+    border-radius:
+      0 28px 28px 28px;
+
+  }
+
+
+  /* الشارات */
+
+  .sutool-product-badges {
+
+    top:
+      9px;
+
+    right:
+      8px;
+
+    gap:
+      5px;
+
+  }
+
+
+  .sutool-product-badge {
+
+    min-height:
+      31px;
+
+    padding:
+      5px 10px;
+
+    font-size:
+      11px;
+
+  }
+
+
+  /* زر المفضلة */
+
+  .sutool-favorite {
+
+    top:
+      9px;
+
+    left:
+      8px;
+
+    width:
+      43px;
+
+    height:
+      43px;
+
+    border-radius:
+      12px;
+
+    font-size:
+      25px;
+
+  }
+
+
+  /* بيانات المنتج */
+
+  .sutool-product-info {
+
+    padding:
+      10px 8px 0;
+
+  }
+
+
+  .sutool-product-name {
+
+    font-size:
+      14px;
+
+    line-height:
+      1.55;
+
+    min-height:
+      45px;
+
+  }
+
+
+  /* السعر */
+
+  .sutool-current-price {
+
+    font-size:
+      20px;
+
+  }
+
+
+  .sutool-currency {
+
+    font-size:
+      13px;
+
+  }
+
+
+  .sutool-old-price {
+
+    font-size:
+      11px;
+
+  }
+
+
+  .sutool-discount {
+
+    font-size:
+      11px;
+
+  }
+
+
+  /* الخيارات */
+
+  .sutool-product-options {
+
+    font-size:
+      12px;
+
+    margin:
+      8px 0 10px;
+
+  }
+
+
+  /* زر السلة */
+
+  .sutool-cart-button {
+
+    height:
+      50px;
+
+    font-size:
+      15px;
+
+    border-radius:
+      28px 28px 0 0;
+
+  }
+
+}
+
+</style>
+
+
+
+<script>
+
+/* =========================================================
+   منتجات مختارة
+=========================================================
+
+   أنت تتحكم بالمنتجات من هنا فقط.
+
+   أضف أو احذف المنتجات التي تريدها.
+
+========================================================= */
+
+
+const SUTOOL_SELECTED_PRODUCTS = [
+
+
+  /* =====================================================
+     المنتج الأول
+  ===================================================== */
+
+  {
+
+    id:
+      1,
+
+    name:
+      "عباية سوداء مع وردة أورجانزا مميزة مشغولة يدوياً",
+
+    image:
+      "images/products/product-1.jpg",
+
+    price:
+      232,
+
+    oldPrice:
+      289,
+
+    options:
+      "متوفر بعدة خيارات",
+
+    badges:
+      [
+        "تباع سريعاً"
+      ]
+
+  },
+
+
+  /* =====================================================
+     المنتج الثاني
+  ===================================================== */
+
+  {
+
+    id:
+      2,
+
+    name:
+      "عباية A12 بليزر - قماش فاخر وأنيق",
+
+    image:
+      "images/products/product-2.jpg",
+
+    price:
+      316,
+
+    oldPrice:
+      389,
+
+    options:
+      "متوفر بعدة خيارات",
+
+    badges:
+      [
+        "تباع سريعاً"
+      ]
+
+  }
+
+];
+
+
+
+/* =========================================================
+   إعداد العملة
+========================================================= */
+
+const SUTOOL_CURRENCY =
+  "ر.س";
+
+
+
+/* =========================================================
+   تحويل الشارة إلى CSS
+========================================================= */
+
+function sutoolGetBadgeClass(
+  badge
+) {
+
+
+  switch (badge) {
+
+
+    case "تباع سريعاً":
+
+      return "sutool-badge-fast";
+
+
+    case "كمية محدودة":
+
+      return "sutool-badge-limited";
+
+
+    case "جديد":
+
+      return "sutool-badge-new";
+
+
+    case "الأكثر مبيعاً":
+
+      return "sutool-badge-best";
+
+
+    case "عرض خاص":
+
+      return "sutool-badge-offer";
+
+
+    default:
+
+      return "sutool-badge-new";
+
+  }
+
+}
+
+
+
+/* =========================================================
+   حساب الخصم
+========================================================= */
+
+function sutoolCalculateDiscount(
+  price,
+  oldPrice
+) {
+
+
+  if (
+    !oldPrice ||
+    oldPrice <= price
+  ) {
+
+    return "";
+
+  }
+
+
+  const discount =
+    Math.round(
+      (
+        (oldPrice - price)
+        /
+        oldPrice
+      ) * 100
+    );
+
+
+  return discount;
+
+}
+
+
+
+/* =========================================================
+   إنشاء الشارات
+========================================================= */
+
+function sutoolCreateBadges(
+  badges
+) {
+
+
+  if (
+    !Array.isArray(badges) ||
+    badges.length === 0
+  ) {
+
+    return "";
+
+  }
+
+
+  return `
+
+    <div class="sutool-product-badges">
+
+      ${
+        badges.map(
+          function(badge) {
+
+            return `
+
+              <span
+                class="
+                  sutool-product-badge
+                  ${sutoolGetBadgeClass(badge)}
+                ">
+
+                ${badge}
+
+              </span>
+
+            `;
+
+          }
+        ).join("")
+      }
+
+    </div>
+
+  `;
+
+}
+
+
+
+/* =========================================================
+   إنشاء بطاقة المنتج
+========================================================= */
+
+function sutoolCreateProductCard(
+  product
+) {
+
+
+  const discount =
+    sutoolCalculateDiscount(
+      product.price,
+      product.oldPrice
+    );
+
+
+  const badges =
+    sutoolCreateBadges(
+      product.badges
+    );
+
+
+  return `
+
+    <article
+      class="sutool-product-card"
+      data-product-id="${product.id}">
+
+
+      <!-- ================================================
+           صورة المنتج
+      ================================================= -->
+
+      <div class="sutool-product-image">
+
+
+        <img
+          src="${product.image}"
+          alt="${product.name}"
+          loading="lazy">
+
+
+        <!-- الشارات -->
+
+        ${badges}
+
+
+        <!-- المفضلة -->
+
+        <button
+          type="button"
+          class="sutool-favorite"
+          data-favorite-id="${product.id}"
+          aria-label="إضافة إلى المفضلة">
+
+          ♡
+
+        </button>
+
+
+      </div>
+
+
+
+      <!-- ================================================
+           معلومات المنتج
+      ================================================= -->
+
+      <div class="sutool-product-info">
+
+
+        <!-- اسم المنتج -->
+
+        <div class="sutool-product-name">
+
+          ${product.name}
+
+        </div>
+
+
+
+        <!-- السعر -->
+
+        <div class="sutool-product-price">
+
+
+          <span class="sutool-current-price">
+
+            ${Number(product.price).toFixed(2)}
+
+            <span class="sutool-currency">
+
+              ${SUTOOL_CURRENCY}
+
+            </span>
+
+          </span>
+
+
+
+          ${
+            product.oldPrice
+              ?
+
+              `
+
+                <span class="sutool-old-price">
+
+                  ${Number(
+                    product.oldPrice
+                  ).toFixed(2)}
+
+                </span>
+
+              `
+
+              :
+
+              ""
+
+          }
+
+
+
+          ${
+            discount
+              ?
+
+              `
+
+                <span class="sutool-discount">
+
+                  خصم ${discount}%
+
+                </span>
+
+              `
+
+              :
+
+              ""
+
+          }
+
+
+        </div>
+
+
+
+        <!-- الخيارات -->
+
+        ${
+          product.options
+            ?
+
+            `
+
+              <div
+                class="sutool-product-options">
+
+                ${product.options}
+
+              </div>
+
+            `
+
+            :
+
+            ""
+
+        }
+
+
+
+        <!-- زر السلة -->
+
+        <button
+          type="button"
+          class="sutool-cart-button"
+          data-cart-product="${product.id}">
+
+          أضف إلى السلة
+
+        </button>
+
+
+      </div>
+
+
+    </article>
+
+  `;
+
+}
+
+
+
+/* =========================================================
+   عرض المنتجات
+========================================================= */
+
+function sutoolRenderProducts() {
+
+
+  const grid =
+    document.getElementById(
+      "sutool-products-grid"
+    );
+
+
+  if (!grid) {
+
+    return;
+
+  }
+
+
+  grid.innerHTML = "";
+
+
+  if (
+    !Array.isArray(
+      SUTOOL_SELECTED_PRODUCTS
+    )
+    ||
+    SUTOOL_SELECTED_PRODUCTS.length === 0
+  ) {
+
+    return;
+
+  }
+
+
+  SUTOOL_SELECTED_PRODUCTS.forEach(
+    function(product) {
+
+
+      grid.insertAdjacentHTML(
+
+        "beforeend",
+
+        sutoolCreateProductCard(
+          product
+        )
+
+      );
+
+    }
+  );
+
+
+  sutoolSetupButtons();
+
+}
+
+
+
+/* =========================================================
+   تشغيل الأزرار
+========================================================= */
+
+function sutoolSetupButtons() {
+
+
+  /* =====================================================
+     المفضلة
+  ===================================================== */
+
+  document
+    .querySelectorAll(
+      "[data-favorite-id]"
+    )
+    .forEach(
+      function(button) {
+
+
+        button.addEventListener(
+          "click",
+          function() {
+
+
+            this.classList.toggle(
+              "active"
+            );
+
+
+            if (
+              this.classList.contains(
+                "active"
+              )
+            ) {
+
+              this.textContent =
+                "♥";
+
+            }
+
+            else {
+
+              this.textContent =
+                "♡";
+
+            }
+
+
+          }
+        );
+
+      }
+    );
+
+
+
+  /* =====================================================
+     السلة
+  ===================================================== */
+
+  document
+    .querySelectorAll(
+      "[data-cart-product]"
+    )
+    .forEach(
+      function(button) {
+
+
+        button.addEventListener(
+          "click",
+          function() {
+
+
+            const productId =
+              Number(
+                this.dataset.cartProduct
+              );
+
+
+            sutoolAddToCart(
+              productId
+            );
+
+
+          }
+        );
+
+      }
+    );
+
+}
+
+
+
+/* =========================================================
+   إضافة المنتج إلى السلة
+=========================================================
+
+   أولاً نحاول استخدام دالة السلة الموجودة
+   في متجرك.
+
+========================================================= */
+
+function sutoolAddToCart(
+  productId
+) {
+
+
+  /* =====================================================
+     إذا كان مشروعك يستخدم addToCart
+  ===================================================== */
+
+  if (
+    typeof window.addToCart ===
+    "function"
+  ) {
+
+
+    window.addToCart(
+      productId
+    );
+
+
+    return;
+
+  }
+
+
+
+  /* =====================================================
+     إذا كان يستخدم addProductToCart
+  ===================================================== */
+
+  if (
+    typeof window.addProductToCart ===
+    "function"
+  ) {
+
+
+    window.addProductToCart(
+      productId
+    );
+
+
+    return;
+
+  }
+
+
+
+  /* =====================================================
+     إذا كان يستخدم addItemToCart
+  ===================================================== */
+
+  if (
+    typeof window.addItemToCart ===
+    "function"
+  ) {
+
+
+    window.addItemToCart(
+      productId
+    );
+
+
+    return;
+
+  }
+
+
+
+  /* =====================================================
+     حدث احتياطي
+  ===================================================== */
+
+  document.dispatchEvent(
+
+    new CustomEvent(
+      "sutool:add-to-cart",
+      {
+
+        detail: {
+
+          productId:
+            productId
+
+        }
+
+      }
+    )
+
+  );
+
+
+  console.log(
+    "تم اختيار المنتج للسلة:",
+    productId
+  );
+
+}
+
+
+
+/* =========================================================
+   تشغيل الإضافة
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+
+    sutoolRenderProducts();
+
+
+  }
+);
+
+</script>
+<link rel="stylesheet" href="aosan-exclusive.css">
+<div class="aosan-showcase aosan-showcase--exclusive" data-store-url="https://sotool-store.onrender.com">
+<header class="aosan-exclusive-header">
+<div aria-hidden="true" class="aosan-exclusive-header__ornament">✦</div>
+
+<div>
+<span class="aosan-exclusive-header__eyebrow">SOTOOL STORE · EXCLUSIVE COLLECTION</span>
+<h1>اختياراتك الراقية تبدأ من هنا</h1>
+<p>تشكيلة منتقاة بعناية، بتجربة تسوق فاخرة ومميزة.</p>
+</div>
+<a class="aosan-exclusive-header__cta" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<span>اكتشف المتجر</span>
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</a>
+</header>
+
+<section aria-labelledby="aosan-heading-1" class="aosan-section" data-section="01">
+<div class="aosan-section__heading">
+<span class="aosan-section__line"></span>
+<h2 id="aosan-heading-1">أحدث صيحات العبايات والبراقع الراقية</h2>
+<span class="aosan-section__line"></span>
+</div>
+<div class="aosan-section__scroller">
+<a aria-label="تصفح خمارات وبراقع" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="خمارات وبراقع" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-28-662e912bcc7d7.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>خمارات وبراقع</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح عبايات مطرز" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="عبايات مطرز" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-30-66313e9fb8d92.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>عبايات مطرز</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح عبايات سادة" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="عبايات سادة" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-30-66313efc3a3bc.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>عبايات سادة</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح عبايات ملونة" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="عبايات ملونة" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5a796a65e.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>عبايات ملونة</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح مقارم ملونة" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="مقارم ملونة" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae57c262509.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>مقارم ملونة</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+</div>
+</section>
+<section aria-labelledby="aosan-heading-2" class="aosan-section" data-section="02">
+<div class="aosan-section__heading">
+<span class="aosan-section__line"></span>
+<h2 id="aosan-heading-2">أحذية أنيقة وتشكيلات مبهرة</h2>
+<span class="aosan-section__line"></span>
+</div>
+<div class="aosan-section__scroller">
+<a aria-label="تصفح صنادل" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="صنادل" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae555f91b88.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>صنادل</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح جزمات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="جزمات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae55f4d0191.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>جزمات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح بواتي" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="بواتي" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5743a0118.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>بواتي</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+</div>
+</section>
+<section aria-labelledby="aosan-heading-3" class="aosan-section" data-section="03">
+<div class="aosan-section__heading">
+<span class="aosan-section__line"></span>
+<h2 id="aosan-heading-3">اكسسوارات مذهلة ذات لمسة ساحرة</h2>
+<span class="aosan-section__line"></span>
+</div>
+<div class="aosan-section__scroller">
+<a aria-label="تصفح اطقم زركون" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="اطقم زركون" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5b22752ab.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>اطقم زركون</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح ساعات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="ساعات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5bb4c091d.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ساعات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح اطقم مطلي" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="اطقم مطلي" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5c646126c.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>اطقم مطلي</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح حلق اذان" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="حلق اذان" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5dd18ec81.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>حلق اذان</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+</div>
+</section>
+<section aria-labelledby="aosan-heading-4" class="aosan-section" data-section="04">
+<div class="aosan-section__heading">
+<span class="aosan-section__line"></span>
+<h2 id="aosan-heading-4">تسوقوا أحدث منتجات الجمال والعناية</h2>
+<span class="aosan-section__line"></span>
+</div>
+<div class="aosan-section__scroller">
+<a aria-label="تصفح المكياج" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="المكياج" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5fe3d4f18.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>المكياج</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح العناية" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="العناية" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-03-08-65ea35e89a980.png"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>العناية</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح الأجهزة" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="الأجهزة" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-28-662e8a6488daa.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>الأجهزة</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+</div>
+</section>
+<section aria-labelledby="aosan-heading-5" class="aosan-section" data-section="05">
+<div class="aosan-section__heading">
+<span class="aosan-section__line"></span>
+<h2 id="aosan-heading-5">ملابس الأولاد والبنات</h2>
+<span class="aosan-section__line"></span>
+</div>
+<div class="aosan-section__scroller">
+<a aria-label="تصفح العطور النسائيه" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="العطور النسائيه" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-28-662e8d868f0d6.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>العطور النسائيه</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح العطور الرجالية" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="العطور الرجالية" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-24-66a120c781657.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>العطور الرجالية</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح جمال المنزل" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="جمال المنزل" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-03-08-65ea3659c2c54.png"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>جمال المنزل</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح العناية بالشعر" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="العناية بالشعر" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-24-66a10edac2ee2.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>العناية بالشعر</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح عدسات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="عدسات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-24-66a10cc02c4a1.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>عدسات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح ملابس الاولاد" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="ملابس الاولاد" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-30-6630f705b416a.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ملابس الاولاد</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح ملابس البنات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="ملابس البنات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-30-66a8f8cfe28e0.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ملابس البنات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح ملابس المواليد" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="ملابس المواليد" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-30-66a8e202d319e.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ملابس المواليد</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+</div>
+</section>
+<section aria-labelledby="aosan-heading-6" class="aosan-section" data-section="06">
+<div class="aosan-section__heading">
+<span class="aosan-section__line"></span>
+<h2 id="aosan-heading-6">كل ما يخص أناقة الرجل</h2>
+<span class="aosan-section__line"></span>
+</div>
+<div class="aosan-section__scroller">
+<a aria-label="تصفح ألعاب" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="ألعاب" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae5eaf035ca.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ألعاب</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح العناية بالطفل" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="العناية بالطفل" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-30-66313a0e3d16c.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>العناية بالطفل</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح أحذية" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="أحذية" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-30-66310fccce0dc.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>أحذية</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح الإطعام ومستلزماته" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="الإطعام ومستلزماته" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-30-66313931b6758.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>الإطعام ومستلزماته</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح ملابس داخليه" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="ملابس داخليه" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-24-66a12003f1ec1.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ملابس داخليه</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح شيالات وحضانات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="شيالات وحضانات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-08-03-66ae4aaaa52b3.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>شيالات وحضانات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح أثواب" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="أثواب" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-03-08-65ea428b38882.png"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>أثواب</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح شمزان" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="شمزان" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-30-66a8fba3e90a5.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>شمزان</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح ملابس داخلية" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="ملابس داخلية" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-28-662e883cab425.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>ملابس داخلية</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح معاوز" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--navy">
+<div class="aosan-card__image-wrap">
+<img alt="معاوز" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-30-66a8e2c86b74f.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>معاوز</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح أحذية" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--rose">
+<div class="aosan-card__image-wrap">
+<img alt="أحذية" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-04-28-662e8cdb91348.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>أحذية</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح بنطلونات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--mint">
+<div class="aosan-card__image-wrap">
+<img alt="بنطلونات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-03-08-65ea37e42e706.png"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>بنطلونات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+<a aria-label="تصفح تيشرتات وترنجات" class="aosan-category-card" href="https://sotool-store.onrender.com" rel="noopener noreferrer" target="_blank">
+<article class="aosan-card aosan-card--sand">
+<div class="aosan-card__image-wrap">
+<img alt="تيشرتات وترنجات" class="aosan-card__image" loading="lazy" onerror="this.onerror=null;this.src='https://aosan.co/assets/front-end/img/image-place-holder.png';" src="https://aosan.co/storage/category/2024-07-24-66a11ace04760.webp"/>
+<span aria-hidden="true" class="aosan-card__shine"></span>
+</div>
+<div class="aosan-card__footer">
+<span>تيشرتات وترنجات</span>
+<svg aria-hidden="true" focusable="false" viewbox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+</div>
+</article>
+</a>
+</div>
+</section>
+
+<div class="aosan-exclusive-footer" role="note">
+<span aria-hidden="true" class="aosan-exclusive-footer__dot"></span>
+<span>تجربة مختارة لعشاق التفاصيل الراقية</span>
+</div>
+</div>
+
+
+<section id="category">
+<div class="container">
+<div class="text-center mb-5" data-aos="fade-up">
+<span class="slbl">ما نقدمه</span>
+<h2 class="stitle">تصفحي حسب <span>الفئة</span></h2>
+<div class="sline"></div>
+<p class="sdesc mx-auto" style="max-width:480px;">من القطع اليومية إلى التفاصيل الراقية، اختاري ما يرافق يومك.</p>
+</div>
+<div class="row g-3 justify-content-center">
+<div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="0">
+<div class="catcard active" data-filter="all">
+<img alt="" class="catimg" src="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="catnm">كل المنتجات</div>
+<div class="catct">99 items</div>
+</div>
+</div>
+<div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="70">
+<div class="catcard" data-filter="burgers">
+<img alt="" class="catimg" src="https://images.pexels.com/photos/13791266/pexels-photo-13791266.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="catnm">للسيدات</div>
+<div class="catct">24 items</div>
+</div>
+</div>
+<div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="140">
+<div class="catcard" data-filter="pizza">
+<img alt="" class="catimg" src="https://images.pexels.com/photos/13862203/pexels-photo-13862203.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="catnm">للأطفال</div>
+<div class="catct">18 items</div>
+</div>
+</div>
+<div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="210">
+<div class="catcard" data-filter="chicken">
+<img alt="" class="catimg" src="https://images.pexels.com/photos/13838837/pexels-photo-13838837.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="catnm">Fried فساتين</div>
+<div class="catct">15 items</div>
+</div>
+</div>
+<div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="280">
+<div class="catcard" data-filter="wraps">
+<img alt="" class="catimg" src="https://images.pexels.com/photos/33537065/pexels-photo-33537065.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="catnm">أطقم</div>
+<div class="catct">12 items</div>
+</div>
+</div>
+<div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="350">
+<div class="catcard" data-filter="desserts">
+<img alt="" class="catimg" src="https://images.pexels.com/photos/37558001/pexels-photo-37558001.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="catnm">عروض خاصة</div>
+<div class="catct">20 items</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+
+<section id="menu">
+<div class="container">
+<div class="text-center mb-5" data-aos="fade-up">
+<span class="slbl">مختاراتنا</span>
+<h2 class="stitle">Our مختارات <span>المتجر</span></h2>
+<div class="sline"></div>
+</div>
+
+<div class="text-center mb-4" data-aos="fade-up">
+<button class="filtbtn active" data-f="all">الكل</button>
+<button class="filtbtn" data-f="burgers">للسيدات</button>
+<button class="filtbtn" data-f="pizza">للأطفال</button>
+<button class="filtbtn" data-f="chicken">فساتين</button>
+<button class="filtbtn" data-f="wraps">أطقم</button>
+<button class="filtbtn" data-f="desserts">عروض خاصة</button>
+<button class="filtbtn" data-f="pasta">إكسسوارات</button>
+</div>
+<div class="catalog-tools" id="catalogTools"><div class="filter-buttons"><button class="filter-btn active" data-filter="all">الكل</button><button class="filter-btn" data-filter="women">السيدات</button><button class="filter-btn" data-filter="kids">الأطفال</button></div><label class="sort-control">ترتيب السعر<select id="sortSelect" aria-label="ترتيب المنتجات حسب السعر"><option value="default">الافتراضي</option><option value="low">من الأقل للأعلى</option><option value="high">من الأعلى للأقل</option></select></label></div><div class="row g-4" id="mgrid">
+
+<div class="col-sm-6 col-lg-4 mwrap" data-aos="fade-up" data-c="burgers">
+<div class="mcard" data-cal="620" data-cat="للسيدات" data-audience="women" data-desc="عباية يومية بقصة عملية وخامة مريحة، بتفاصيل هادئة تناسب إطلالتك اليومية." data-img="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900" data-old="349 ر.س" data-price="289 ر.س" data-rating="4.9" data-reviews="128" data-tags="Spicy,Bestseller,Beef" data-time="12" data-title="Classic عباية يومية">
+<div class="mimg">
+<img alt="عباية يومية" src="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="mbdg hot"><i class="fas fa-star"></i> Hot</div>
+<div class="mhrt"><i class="far fa-heart"></i></div>
+</div>
+<div class="mbody">
+<div class="mcat">للسيدات</div>
+<div class="mtit">Classic عباية يومية</div>
+<div class="mdesc">Double smashed patty, cheddar, caramelized onions, pickles &amp; special sauce</div>
+<div class="mfoot">
+<div>
+<div class="mprice">289 ر.س <small>349 ر.س</small></div>
+<div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(128)</span></div>
+</div>
+<button class="madd" title="View Details"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-sm-6 col-lg-4 mwrap" data-aos="fade-up" data-aos-delay="80" data-c="pizza">
+<div class="mcard" data-cal="480" data-cat="للأطفال" data-audience="kids" data-desc="فستان ناعم بقصة لطيفة وتفاصيل مريحة لأيام الصغيرات." data-img="https://images.pexels.com/photos/13791266/pexels-photo-13791266.jpeg?auto=compress&cs=tinysrgb&w=900" data-old="279 ر.س" data-price="219 ر.س" data-rating="4.8" data-reviews="95" data-tags="Vegetarian,جديد,Italian" data-time="18" data-title="فستان غيمة للصغيرات">
+<div class="mimg">
+<img alt="للأطفال" src="https://images.pexels.com/photos/13791266/pexels-photo-13791266.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="mbdg new"><i class="fas fa-star"></i> جديد</div>
+<div class="mhrt"><i class="far fa-heart"></i></div>
+</div>
+<div class="mbody">
+<div class="mcat">للأطفال</div>
+<div class="mtit">فستان غيمة للصغيرات</div>
+<div class="mdesc">San Marzano tomatoes, buffalo mozzarella, basil &amp; truffle oil on sourdough</div>
+<div class="mfoot">
+<div>
+<div class="mprice">219 ر.س <small>279 ر.س</small></div>
+<div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(95)</span></div>
+</div>
+<button class="madd" title="View Details"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-sm-6 col-lg-4 mwrap" data-aos="fade-up" data-aos-delay="160" data-c="chicken">
+<div class="mcard" data-cal="710" data-cat="فساتين" data-audience="women" data-desc="طقم خفيف من خامة كتانية يناسب اللعب والمشاوير." data-img="https://images.pexels.com/photos/13862203/pexels-photo-13862203.jpeg?auto=compress&cs=tinysrgb&w=900" data-old="129 ر.س" data-price="159 ر.س" data-rating="5.0" data-reviews="210" data-tags="Spicy,Bestseller,Crispy" data-time="15" data-title="Nashville Hot فساتين">
+<div class="mimg">
+<img alt="فساتين" src="https://images.pexels.com/photos/13862203/pexels-photo-13862203.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="mbdg"><i class="fas fa-star"></i> الأكثر طلباً</div>
+<div class="mhrt"><i class="far fa-heart"></i></div>
+</div>
+<div class="mbody">
+<div class="mcat">فساتين</div>
+<div class="mtit">Nashville Hot فساتين</div>
+<div class="mdesc">طقم خفيف من خامة كتانية يناسب اللعب والمشاوير</div>
+<div class="mfoot">
+<div>
+<div class="mprice">159 ر.س <small>129 ر.س</small></div>
+<div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(210)</span></div>
+</div>
+<button class="madd" title="View Details"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-sm-6 col-lg-4 mwrap" data-aos="fade-up" data-c="wraps">
+<div class="mcard" data-cal="520" data-cat="أطقم" data-audience="women" data-desc="وشاح ناعم بلون الطين يضيف هدوءاً وأناقة لإطلالتك." data-img="https://images.pexels.com/photos/13838837/pexels-photo-13838837.jpeg?auto=compress&cs=tinysrgb&w=900" data-old="" data-price="89 ر.س" data-rating="4.5" data-reviews="74" data-tags="Grilled,Fresh,Mexican" data-time="10" data-title="وشاح ناعم بلون الطين">
+<div class="mimg">
+<img alt="Wrap" src="https://images.pexels.com/photos/13838837/pexels-photo-13838837.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="mhrt"><i class="far fa-heart"></i></div>
+</div>
+<div class="mbody">
+<div class="mcat">أطقم</div>
+<div class="mtit">وشاح ناعم بلون الطين</div>
+<div class="mdesc">Grilled chicken, peppers, sour cream &amp; guacamole in a warm tortilla</div>
+<div class="mfoot">
+<div>
+<div class="mprice">89 ر.س</div>
+<div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(74)</span></div>
+</div>
+<button class="madd" title="View Details"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-sm-6 col-lg-4 mwrap" data-aos="fade-up" data-aos-delay="80" data-c="desserts">
+<div class="mcard" data-cal="390" data-cat="عروض خاصة" data-audience="kids" data-desc="طقم يومي ناعم للصغيرات، مريح للحركة واللعب." data-img="https://images.pexels.com/photos/33537065/pexels-photo-33537065.jpeg?auto=compress&cs=tinysrgb&w=900" data-old="169 ر.س" data-price="129 ر.س" data-rating="4.9" data-reviews="56" data-tags="Sweet,جديد,Chocolate" data-time="8" data-title="Nutella إكسسارات شعر">
+<div class="mimg">
+<img alt="إكسسارات شعر" src="https://images.pexels.com/photos/33537065/pexels-photo-33537065.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="mbdg new"><i class="fas fa-star"></i> جديد</div>
+<div class="mhrt"><i class="far fa-heart"></i></div>
+</div>
+<div class="mbody">
+<div class="mcat">عروض خاصة</div>
+<div class="mtit">Nutella إكسسارات شعر</div>
+<div class="mdesc">Molten chocolate cake with Nutella center, vanilla ice cream &amp; caramel</div>
+<div class="mfoot">
+<div>
+<div class="mprice">129 ر.س <small>169 ر.س</small></div>
+<div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(56)</span></div>
+</div>
+<button class="madd" title="View Details"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-sm-6 col-lg-4 mwrap" data-aos="fade-up" data-aos-delay="160" data-c="pasta">
+<div class="mcard" data-cal="560" data-cat="إكسسوارات" data-audience="women" data-desc="حقيبة قماش عملية تحمل الأشياء الصغيرة بأناقة." data-img="https://images.pexels.com/photos/37558001/pexels-photo-37558001.jpeg?auto=compress&cs=tinysrgb&w=900" data-old="" data-price="129 ر.س" data-rating="4.9" data-reviews="88" data-tags="Vegetarian,اختيار سطول,Italian" data-time="20" data-title="Truffle Mushroom إكسسوارات">
+<div class="mimg">
+<img alt="إكسسوارات" src="https://images.pexels.com/photos/37558001/pexels-photo-37558001.jpeg?auto=compress&cs=tinysrgb&w=900"/>
+<div class="mbdg hot">اختيار سطول</div>
+<div class="mhrt"><i class="far fa-heart"></i></div>
+</div>
+<div class="mbody">
+<div class="mcat">إكسسوارات</div>
+<div class="mtit">Truffle Mushroom إكسسوارات</div>
+<div class="mdesc">Al dente tagliatelle, wild mushrooms, black truffle, parmesan &amp; thyme</div>
+<div class="mfoot">
+<div>
+<div class="mprice">129 ر.س</div>
+<div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(88)</span></div>
+</div>
+<button class="madd" title="View Details"><i class="fas fa-plus"></i></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="text-center mt-5"><a class="btn-red" href="#"><i class="fas fa-th-large"></i>View Full المتجر</a></div>
+</div>
+</section>
+
+<div id="menuPop">
+<div class="mpbox">
+<button class="mpclose" id="mpClose"><i class="fas fa-times"></i></button>
+<div class="mpimg"><img alt="" id="mpImg" src=""/></div>
+<div class="mpbody">
+<div id="mpCat"></div>
+<div id="mpTitle"></div><div class="mpgallery" id="mpGallery"></div><div class="mpsizes"><span>المقاس:</span><button data-size="XS">XS</button><button data-size="S">S</button><button data-size="M" class="selected">M</button><button data-size="L">L</button><button data-size="XL">XL</button></div><div class="mp-qty"><span>الكمية:</span><div class="qty-control"><button id="mpQtyMinus" type="button" aria-label="تقليل الكمية">−</button><input id="mpQty" type="number" min="1" max="99" value="1" aria-label="عدد القطع"><button id="mpQtyPlus" type="button" aria-label="زيادة الكمية">+</button></div></div>
+<div id="mpStars"></div>
+<div id="mpDesc"></div>
+<div id="mpPrice"></div>
+<div class="mpmeta" id="mpMeta"></div>
+<div class="mpqty">
+<button class="mpqbtn" id="mpMinus">-</button>
+<span class="mpqnum" id="mpQnum">1</span>
+<button class="mpqbtn" id="mpPlus">+</button>
+<span style="font-size:.82rem;color:#aaa;margin-left:9px;">قطعة</span>
+</div>
+<div class="mptags" id="mpTags"></div>
+<button class="mpaddcart" id="mpAddCart"><i class="fas fa-shopping-cart"></i>أضيفي إلى السلة</button>
+</div>
+</div>
+</div>
+
+<div class="cart-drawer" id="cartDrawer"><div class="cart-head"><strong>سلة مشترياتك</strong><button id="cartClose" aria-label="إغلاق السلة"><i class="fas fa-times"></i></button></div><div id="cartItems" class="cart-items"><p class="cart-empty">السلة فارغة حالياً.</p></div><div class="cart-foot"><div><span>الإجمالي</span><strong id="cartTotal">0 ر.س</strong></div><button class="btn-red" id="checkoutOpen"><i class="fab fa-whatsapp"></i> إتمام الطلب عبر واتساب</button></div></div><div class="checkout-modal" id="checkoutModal"><div class="checkout-box"><button class="checkout-close" id="checkoutClose"><i class="fas fa-times"></i></button><span class="slbl">إتمام الطلب</span><h3>أرسلي طلبك مباشرة</h3><p>أدخلي بياناتك وسنفتح واتساب برسالة طلب جاهزة إلى متجر سطول.</p><form id="whatsappForm"><input id="waName" required placeholder="الاسم الكامل"><input id="waPhone" required type="tel" placeholder="رقم الهاتف"><input id="waAddress" required placeholder="العنوان والمدينة"><textarea id="waNotes" rows="3" placeholder="ملاحظات إضافية أو المقاسات"></textarea><section class="order-preview" id="orderPreview" aria-live="polite">
+  <div class="order-preview-head">
+    <div><span class="preview-kicker">مراجعة أخيرة</span><h4>ملخص طلبك</h4></div>
+    <span class="preview-badge"><i class="fas fa-shield-heart"></i> جاهز للمراجعة</span>
+  </div>
+  <div id="orderPreviewItems" class="order-preview-items"><p class="preview-empty">أضيفي منتجًا إلى السلة ليظهر هنا.</p></div>
+  <div class="order-preview-total"><span>الإجمالي المتوقع</span><strong id="orderPreviewTotal">0 ر.س</strong></div>
+  <div class="order-preview-customer" id="orderPreviewCustomer">أكملي بيانات التواصل للتأكد من تفاصيل التوصيل.</div>
+</section><button class="btn-red w-100" type="submit"><i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب</button></form></div></div><div class="success-modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-hidden="true"><div class="success-box"><button class="success-close" id="successClose" type="button" aria-label="إغلاق رسالة التأكيد"><i class="fas fa-times"></i></button><div class="success-icon"><i class="fab fa-whatsapp"></i></div><span class="success-kicker">تم تجهيز طلبك</span><h3 id="successTitle">تم تحويلك إلى واتساب</h3><p>شكرًا لكِ. ستجدين رسالة الطلب جاهزة في واتساب لإكمال التأكيد مع متجر سطول.</p><button class="btn-red success-action" id="successDone" type="button">حسنًا، فهمت</button></div></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="products.js"></script><script src="store-sotool.js"></script>
+<!-- القائمة السفلية الجديدة -->
+<nav class="bottom-navigation" dir="rtl" aria-label="القائمة الرئيسية">
+  <a href="#hero" class="nav-item active" aria-current="page">
+    <span class="nav-icon"><i class="fas fa-house" aria-hidden="true"></i></span>
+    <span class="nav-text">الرئيسية</span>
+  </a>
+  <a href="/categories.html" class="nav-item">
+    <span class="nav-icon"><i class="fas fa-grid-2" aria-hidden="true"></i></span>
+    <span class="nav-text">الأقسام</span>
+  </a>
+  <a href="/cart.html" class="nav-item" id="bottomCartButton">
+    <span class="nav-icon"><i class="fas fa-bag-shopping" aria-hidden="true"></i></span>
+    <span class="nav-text">السلة</span>
+  </a>
+  <a href="/wishlist.html" class="nav-item">
+    <span class="nav-icon"><i class="fas fa-heart" aria-hidden="true"></i></span>
+    <span class="nav-text">المفضلة</span>
+  </a>
+  <a href="/products-page.html" class="nav-item">
+    <span class="nav-icon new-icon"><i class="fas fa-sparkles" aria-hidden="true"></i></span>
+    <span class="nav-text">جديدنا</span>
+  </a>
+</nav>
+
+<style id="sotool-modern-nav-style">
+:root { --gold: #d4af37; --gold-light: #f3d77a; --gold-dark: #9b720c; --nav-height: 62px; }
+.sotool-modern-navbar {
+  width:100%; min-height:82px; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; direction:ltr;
+  background:linear-gradient(135deg,#9b720c 0%,#d4af37 48%,#f3d477 100%);
+  border-bottom-left-radius:38px; border-bottom-right-radius:38px; box-shadow:0 4px 12px rgba(99,70,0,.18); position:relative; z-index:1000;
+}
+.sotool-modern-navbar .nav-left,.sotool-modern-navbar .nav-right { display:flex; align-items:center; }
+.sotool-modern-navbar .nav-left { gap:16px; }
+.sotool-modern-navbar .nav-left button,.sotool-modern-navbar .modern-menu-button { border:0; padding:0; background:transparent; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.sotool-modern-navbar .nav-cart-button { position:relative; width:28px; height:34px; font-size:22px; }
+.sotool-modern-navbar .nav-cart-button #cartCount { position:absolute; top:-5px; right:-8px; min-width:17px; height:17px; padding:0 4px; display:grid; place-items:center; border-radius:50%; background:#17130b; color:#fff; font:700 10px/1 Arial,sans-serif; }
+.sotool-modern-navbar .header-search-button { width:30px; height:34px; font-size:21px; }
+.sotool-modern-navbar .currency-toggle { display:flex; align-items:center; gap:3px; color:#fff; font:700 17px Arial,sans-serif; cursor:pointer; }
+.sotool-modern-navbar .currency-icon { font-size:21px; line-height:1; }
+.sotool-modern-navbar #currencyShort { font-size:17px; white-space:nowrap; }
+.sotool-modern-navbar .currency-hidden { display:none; }
+.sotool-modern-navbar .nav-right { gap:9px; direction:ltr; }
+.sotool-modern-navbar .modern-logo { display:flex; align-items:center; color:#fff; white-space:nowrap; text-decoration:none; }
+.sotool-modern-navbar .logo-text { font-family:'Dancing Script',cursive; font-size:48px; font-weight:700; line-height:.9; }
+.sotool-modern-navbar .logo-pin { width:48px; height:auto; margin:12px 0 0 -4px; overflow:visible; }
+.sotool-modern-navbar .modern-menu-button { margin-left:2px; font-size:22px; width:30px; height:48px; }
+.sotool-modern-navbar .modern-nav-collapse { width:100%; }
+.sotool-modern-navbar .modern-nav-collapse .nav-link { color:#fff; }
+.bottom-navigation { direction:rtl; position:fixed; z-index:9999; right:12px; left:12px; bottom:8px; height:var(--nav-height); display:flex; align-items:center; justify-content:space-between; gap:2px; padding:4px 6px; background:linear-gradient(135deg,#211b0e 0%,#100e09 50%,#211b0e 100%); border:1px solid rgba(212,175,55,.45); border-radius:22px; box-shadow:0 6px 20px rgba(0,0,0,.28),0 0 12px rgba(212,175,55,.12); font-family:Tahoma,Arial,sans-serif; }
+.bottom-navigation .nav-item { position:relative; flex:1; height:54px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:0; padding:2px; color:#b99a43; text-decoration:none; border-radius:18px; transition:color .2s ease,background .2s ease,transform .2s ease; }
+.bottom-navigation .nav-item:hover { color:var(--gold-light); }
+.bottom-navigation .nav-item.active { color:#17130b; background:linear-gradient(145deg,#f3d77a,#d4af37 55%,#b58b20); box-shadow:0 3px 10px rgba(212,175,55,.25); }
+.bottom-navigation .nav-icon { width:27px; height:27px; display:grid; place-items:center; font-size:21px; }
+.bottom-navigation .nav-text { font-size:10px; font-weight:600; line-height:1; white-space:nowrap; }
+body { padding-bottom:calc(var(--nav-height) + 25px); }
+@media (max-width:768px) {
+  .sotool-modern-navbar { min-height:70px; padding:10px 12px; border-bottom-left-radius:30px; border-bottom-right-radius:30px; }
+  .sotool-modern-navbar .nav-left { gap:10px; }
+  .sotool-modern-navbar .nav-left svg { width:23px; height:23px; }
+  .sotool-modern-navbar .currency-toggle { font-size:14px; }
+  .sotool-modern-navbar .currency-icon { font-size:18px; }
+  .sotool-modern-navbar #currencyShort { font-size:14px; }
+  .sotool-modern-navbar .nav-right { gap:6px; }
+  .sotool-modern-navbar .logo-text { font-size:40px; }
+  .sotool-modern-navbar .logo-pin { width:39px; margin-left:-3px; margin-top:9px; }
+  .sotool-modern-navbar .modern-menu-button { height:40px; }
+  .sotool-modern-navbar .modern-nav-collapse { margin-top:10px; }
+}
+@media (max-width:360px) {
+  .sotool-modern-navbar { min-height:64px; padding:8px 10px; }
+  .sotool-modern-navbar .nav-left { gap:8px; }
+  .sotool-modern-navbar .currency-toggle { font-size:12px; }
+  .sotool-modern-navbar .currency-icon { font-size:16px; }
+  .sotool-modern-navbar #currencyShort { font-size:12px; }
+  .sotool-modern-navbar .logo-text { font-size:35px; }
+  .sotool-modern-navbar .logo-pin { width:34px; }
+  .bottom-navigation { right:8px; left:8px; bottom:6px; height:58px; padding:3px 4px; border-radius:20px; }
+  .bottom-navigation .nav-item { height:50px; }
+  .bottom-navigation .nav-icon { width:24px; height:24px; font-size:19px; }
+  .bottom-navigation .nav-text { font-size:9px; }
+}
+</style>
+<script>
+  document.querySelectorAll('.bottom-navigation .nav-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      document.querySelectorAll('.bottom-navigation .nav-item').forEach(function(navItem){ navItem.classList.remove('active'); navItem.removeAttribute('aria-current'); });
+      this.classList.add('active'); this.setAttribute('aria-current','page');
+    });
+  });
+  document.getElementById('bottomCartButton')?.addEventListener('click', function(event){
+    event.preventDefault();
+    document.getElementById('cartDrawer')?.classList.add('open');
+  });
+</script>
+  <style>
+#yk711-haute-luxury{
+    direction:rtl;
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 50% 0%,rgba(212,175,55,.14),transparent 35%),
+        radial-gradient(circle at 0% 50%,rgba(212,175,55,.07),transparent 30%),
+        #020202;
+    color:#fff;
+    padding:0 0 120px;
+    font-family:inherit;
+}
+
+/* السلايدر */
+#yk711-haute-luxury .that-slider{
+    width:calc(100% - 32px);
+    margin:20px auto 35px;
+    overflow:hidden;
+    border-radius:30px;
+    position:relative;
+    background:#050505;
+    border:2px solid #d4af37;
+    box-shadow:
+        0 0 0 5px rgba(255,255,255,.04),
+        0 20px 55px rgba(0,0,0,.7),
+        0 0 35px rgba(212,175,55,.15);
+}
+
+#yk711-haute-luxury .that-slider img{
+    width:100%;
+    height:auto;
+    display:block;
+    object-fit:cover;
+    border-radius:28px;
+}
+
+/* العنوان */
+#yk711-haute-luxury .luxury-heading{
+    text-align:center;
+    padding:10px 15px 25px;
+}
+
+#yk711-haute-luxury .luxury-kicker{
+    color:#d4af37;
+    font-size:11px;
+    letter-spacing:4px;
+    margin-bottom:8px;
+}
+
+#yk711-haute-luxury .luxury-heading h2{
+    margin:0;
+    color:#fff;
+    font-size:27px;
+    font-weight:700;
+}
+
+#yk711-haute-luxury .luxury-heading .ornament{
+    color:#d4af37;
+    font-size:18px;
+    margin-top:8px;
+}
+
+/* البطاقات الثلاث - أفقية */
+#yk711-haute-luxury .that-features{
+    width:calc(100% - 32px);
+    max-width:1100px;
+    margin:0 auto;
+    display:flex !important;
+    flex-direction:row !important;
+    justify-content:center;
+    align-items:stretch;
+    gap:14px;
+}
+
+/* البطاقة */
+#yk711-haute-luxury .that-feature{
+    flex:1 1 0;
+    min-width:0;
+    margin:0 !important;
+    padding:20px 14px !important;
+    text-align:center;
+    border:1px solid rgba(212,175,55,.75);
+    border-radius:20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.07),
+            rgba(255,255,255,.015)
+        );
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 12px 35px rgba(0,0,0,.45);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+}
+
+/* دائرة الأيقونة */
+#yk711-haute-luxury .that-feature-icon{
+    width:58px !important;
+    height:58px !important;
+    margin:0 auto 10px !important;
+    padding:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    border-radius:50%;
+    border:2px solid #d4af37;
+    box-shadow:0 0 20px rgba(212,175,55,.2);
+}
+
+#yk711-haute-luxury .that-feature-icon img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    border-radius:50%;
+}
+
+/* عناوين البطاقات */
+#yk711-haute-luxury .that-feature h3{
+    color:#f7e7a8;
+    font-size:16px !important;
+    margin:7px 0 6px !important;
+    font-weight:700;
+}
+
+/* وصف البطاقات */
+#yk711-haute-luxury .that-feature p{
+    color:rgba(255,255,255,.72);
+    font-size:12px !important;
+    line-height:1.6 !important;
+    margin:0 !important;
+}
+
+/* الفاصل */
+#yk711-haute-luxury .luxury-divider{
+    width:70%;
+    height:1px;
+    margin:38px auto;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #d4af37,
+        #fff,
+        #d4af37,
+        transparent
+    );
+    position:relative;
+}
+
+#yk711-haute-luxury .luxury-divider span{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:#020202;
+    padding:0 15px;
+    color:#d4af37;
+}
+
+/* من نحن */
+#yk711-haute-luxury .that-about{
+    text-align:center;
+    max-width:750px;
+    margin:0 auto;
+    padding:0 20px;
+}
+
+#yk711-haute-luxury .that-about .est{
+    color:#d4af37;
+    font-size:10px;
+    letter-spacing:3px;
+    margin-bottom:7px;
+}
+
+#yk711-haute-luxury .that-about h2{
+    color:#fff;
+    margin:0 0 12px;
+    font-size:23px;
+}
+
+#yk711-haute-luxury .that-about p{
+    color:rgba(255,255,255,.7);
+    line-height:1.9;
+    font-size:13px;
+    margin:0;
+}
+
+/* الروابط */
+#yk711-haute-luxury .that-links{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin:30px auto 18px;
+    padding:0 15px;
+}
+
+#yk711-haute-luxury .that-links a{
+    color:#f7e7a8;
+    text-decoration:none;
+    font-size:12px;
+    padding:9px 15px;
+    border:1px solid rgba(212,175,55,.5);
+    border-radius:30px;
+    transition:.3s;
+}
+
+#yk711-haute-luxury .that-links a:hover{
+    background:#d4af37;
+    color:#020202;
+}
+
+/* التواصل الاجتماعي */
+#yk711-haute-luxury .that-social{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+
+#yk711-haute-luxury .that-social a{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #d4af37;
+    border-radius:50%;
+    color:#f7e7a8;
+    text-decoration:none;
+    font-size:12px;
+}
+
+/* الجوال */
+@media(max-width:600px){
+
+    #yk711-haute-luxury{
+        padding-bottom:80px !important;
+    }
+
+    #yk711-haute-luxury .that-slider{
+        width:calc(100% - 20px);
+        border-radius:22px;
+        margin-top:12px;
+        margin-bottom:25px;
+    }
+
+    #yk711-haute-luxury .that-slider img{
+        border-radius:20px;
+    }
+
+    #yk711-haute-luxury .luxury-heading{
+        padding-bottom:18px;
+    }
+
+    #yk711-haute-luxury .luxury-heading h2{
+        font-size:22px;
+    }
+
+    /* تبقى البطاقات أفقية */
+    #yk711-haute-luxury .that-features{
+        width:calc(100% - 16px);
+        gap:6px;
+    }
+
+    #yk711-haute-luxury .that-feature{
+        padding:13px 5px !important;
+        border-radius:14px;
+    }
+
+    #yk711-haute-luxury .that-feature-icon{
+        width:43px !important;
+        height:43px !important;
+        padding:5px;
+        margin-bottom:7px !important;
+    }
+
+    #yk711-haute-luxury .that-feature h3{
+        font-size:11px !important;
+        margin:5px 0 !important;
+        white-space:nowrap;
+    }
+
+    #yk711-haute-luxury .that-feature p{
+        font-size:9px !important;
+        line-height:1.45 !important;
+    }
+#yk711-haute-luxury{
+    padding-bottom:20px !important;
+}
+
+@media(max-width:600px){
+    #yk711-haute-luxury{
+        padding-bottom:20px !important;
+    }
+}
+    #yk711-haute-luxury .luxury-divider{
+        margin:27px auto;
+    }
+}
+</style>
+
+<section id="yk711-haute-luxury">
+
+    <!-- السلايدر -->
+    <div class="that-slider">
+        <img src="https://media.zid.store/cdn-cgi/image/w=2220,q=85,f=auto/https://media.zid.store/d14ca5bb-f128-4408-b00a-1f1b0f1d80d3/09d4fe31-4ed5-4bfc-9138-23bfd4aae5ba.png"
+             alt="سطول">
+    </div>
+
+    <!-- العنوان -->
+    <div class="luxury-heading">
+        <div class="luxury-kicker">THE LUXURY EXPERIENCE</div>
+        <h2>تفاصيل تصنع الفرق</h2>
+        <div class="ornament">✦</div>
+    </div>
+
+    <!-- الخدمات -->
+    <div class="that-features">
+
+        <div class="that-feature">
+            <div class="that-feature-icon">
+                <img src="https://media.zid.store/cdn-cgi/image/w=350,q=85,f=auto/https://media.zid.store/d14ca5bb-f128-4408-b00a-1f1b0f1d80d3/9b352073-59c6-4737-9b2d-307390d20fd7.gif"
+                     alt="خدمة العملاء">
+            </div>
+            <h3>خدمة استثنائية</h3>
+            <p>نهتم بتجربتكم ونحرص على خدمتكم بكل عناية.</p>
+        </div>
+
+        <div class="that-feature">
+            <div class="that-feature-icon">
+                <img src="https://media.zid.store/cdn-cgi/image/w=350,q=85,f=auto/https://media.zid.store/d14ca5bb-f128-4408-b00a-1f1b0f1d80d3/942e9b79-951d-4341-ae78-cdbb79bef444.gif"
+                     alt="دفع آمن">
+            </div>
+            <h3>دفع آمن</h3>
+            <p>تجربة دفع سهلة وآمنة مع عناية بخصوصية بياناتكم.</p>
+        </div>
+
+        <div class="that-feature">
+            <div class="that-feature-icon">
+                <img src="https://media.zid.store/cdn-cgi/image/w=350,q=85,f=auto/https://media.zid.store/d14ca5bb-f128-4408-b00a-1f1b0f1d80d3/e21e0646-7d94-4a80-848a-5e0771bba010.gif"
+                     alt="توصيل سريع">
+            </div>
+            <h3>توصيل سريع</h3>
+            <p>نعمل على إيصال طلباتكم بسرعة واهتمام.</p>
+        </div>
+
+    </div>
+
+    <!-- الفاصل -->
+    <div class="luxury-divider">
+        <span>✦</span>
+    </div>
+
+    <!-- من نحن -->
+    <div class="that-about">
+        <div class="est">EST. WITH ELEGANCE</div>
+        <h2>سطول — أناقة بتفاصيلها</h2>
+        <p>
+            نؤمن أن الفخامة لا تحتاج إلى مبالغة، بل تظهر في جودة التفاصيل
+            ودقة الاختيار والتجربة التي تبقى في الذاكرة.
+        </p>
+    </div>
+
+    <!-- الروابط -->
+    <div class="that-links">
+        <a href="#">من نحن</a>
+        <a href="#">سياسة الخصوصية</a>
+        <a href="#">الشروط والأحكام</a>
+        <a href="#">تواصل معنا</a>
+    </div>
+
+    <!-- التواصل -->
+  <div class="that-social">
+        <a href=""><i class="fab fa-facebook-f"></i></a>
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-whatsapp"></i></a>
+<a href="#"><i class="fab fa-tiktok"></i></a>
+    </div>
+
+
+</section>
+</body></html>

@@ -1,0 +1,65 @@
+/*
+  SOTOOL STORE — Exclusive Categories
+  ضع هذا الملف في نفس مجلد ملف HTML أو غيّر مسار href في وسم link.
+*/
+.aosan-showcase {
+  --aosan-black: #050506;
+  --aosan-panel: #050506;
+  --aosan-panel-2: #050506;
+  --aosan-white: #fffafc;
+  --aosan-muted: #b9b1ba;
+  --aosan-navy: #7777d8;
+  --aosan-rose: #d8b77a;
+  --aosan-mint: #9dcfc3;
+  --aosan-gold: #d8b77a;
+  direction: rtl;
+  width: min(100%, 1280px);
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 38px);
+  color: var(--aosan-white);
+  background: radial-gradient(circle at 80% 0%, rgba(0,0,0,.35), transparent 31rem), var(--aosan-black);
+  font-family: inherit;
+  box-sizing: border-box;
+  border-radius: 28px;
+}
+body {
+  background: #070707 url("../assets/login-background.jpg") center / cover fixed no-repeat !important;
+}
+
+.aosan-showcase *, .aosan-showcase *::before, .aosan-showcase *::after { box-sizing: border-box; }
+.aosan-exclusive-header { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 22px; min-height: 190px; margin-bottom: 24px; padding: clamp(24px, 5vw, 52px); overflow: hidden; border: 1px solid rgba(0,0,0,.35); border-radius: 24px; background: linear-gradient(115deg, rgba(0,0,0,.35), transparent 42%), linear-gradient(135deg, #050506, #08080a 70%); box-shadow: 0 20px 55px rgba(0,0,0,.35); }
+.aosan-exclusive-header::after { content: ""; position: absolute; inset: auto -5% -70%; height: 160px; background: radial-gradient(ellipse, rgba(0,0,0,.35), transparent 65%); pointer-events: none; }
+.aosan-exclusive-header__ornament { position: absolute; top: 18px; left: 24px; color: var(--aosan-gold); font-size: 2.3rem; opacity: .8; }
+.aosan-exclusive-header__eyebrow { display: block; margin-bottom: 8px; color: var(--aosan-gold); font-size: .65rem; font-weight: 800; letter-spacing: .18em; }
+.aosan-exclusive-header h1 { margin: 0; color: var(--aosan-white); font-size: clamp(1.45rem, 4vw, 2.45rem); font-weight: 900; line-height: 1.35; }
+.aosan-exclusive-header p { margin: 9px 0 0; color: var(--aosan-muted); font-size: clamp(.83rem, 1.5vw, 1rem); }
+.aosan-exclusive-header__cta { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 9px; padding: 13px 18px; border: 1px solid rgba(216,183,122,.5); border-radius: 999px; background: rgba(0,0,0,.35); color: var(--aosan-white); font-size: .88rem; font-weight: 800; text-decoration: none; transition: background .25s ease, transform .25s ease, box-shadow .25s ease; }
+.aosan-exclusive-header__cta:hover, .aosan-exclusive-header__cta:focus-visible { transform: translateY(-3px); background: var(--aosan-gold); color: #050506; box-shadow: 0 10px 24px rgba(216,183,122,.25); }
+.aosan-exclusive-header__cta svg, .aosan-card__footer svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+.aosan-section { position: relative; margin: 0 0 20px; padding: clamp(18px, 3vw, 28px); overflow: hidden; border: 1px solid rgba(255,255,255,.08); border-radius: 22px; background: linear-gradient(145deg, rgba(0,0,0,.35), rgba(10,10,13,.98)); box-shadow: 0 16px 40px rgba(0,0,0,.28); }
+.aosan-section::before { content: attr(data-section); position: absolute; top: 12px; left: 17px; color: rgba(216,183,122,.5); font-size: .68rem; font-weight: 900; letter-spacing: .12em; }
+.aosan-section::after { content: ""; position: absolute; right: 0; top: 0; width: 32%; height: 3px; background: linear-gradient(90deg, transparent, var(--aosan-rose), var(--aosan-gold)); }
+.aosan-section__heading { display: flex; align-items: center; gap: 14px; margin: 0 0 20px; }
+.aosan-section__heading h2 { flex: 0 1 auto; margin: 0; color: var(--aosan-white); font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 850; line-height: 1.5; text-align: center; }
+.aosan-section__line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(228,180,192,.35)); }
+.aosan-section__line:last-child { transform: scaleX(-1); }
+.aosan-section__scroller { display: grid; grid-auto-flow: column; grid-auto-columns: clamp(152px, 19vw, 205px); gap: clamp(10px, 1.5vw, 18px); overflow-x: auto; padding: 4px 2px 13px; scroll-snap-type: x proximity; scrollbar-color: var(--aosan-rose) #17171d; scrollbar-width: thin; }
+.aosan-category-card { display: block; color: inherit; text-decoration: none; scroll-snap-align: start; }
+.aosan-card { overflow: hidden; border: 1px solid rgba(0,0,0,.35); border-radius: 17px; background: var(--aosan-panel-2); box-shadow: 0 8px 25px rgba(0,0,0,.3); transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.aosan-category-card:hover .aosan-card, .aosan-category-card:focus-visible .aosan-card { transform: translateY(-6px); border-color: rgba(216,183,122,.7); box-shadow: 0 16px 32px rgba(0,0,0,.48), 0 0 0 1px rgba(216,183,122,.12); }
+.aosan-card__image-wrap { position: relative; aspect-ratio: 1 / 1.05; overflow: hidden; background: #050506; }
+.aosan-card__image { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease, filter .45s ease; }
+.aosan-category-card:hover .aosan-card__image { transform: scale(1.06); filter: saturate(1.08) contrast(1.04); }
+.aosan-card__shine { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(0,0,0,.35)50%, transparent 65%); transform: translateX(120%); transition: transform .65s ease; }
+.aosan-category-card:hover .aosan-card__shine { transform: translateX(-120%); }
+.aosan-card__footer { display: flex; min-height: 54px; align-items: center; justify-content: center; gap: 8px; padding: 11px 10px; color: var(--aosan-black); font-size: .88rem; font-weight: 850; text-align: center; }
+.aosan-card__footer svg { flex: 0 0 17px; transition: transform .25s ease; }
+.aosan-category-card:hover .aosan-card__footer svg { transform: translateX(-4px); }
+.aosan-card--navy .aosan-card__footer { background: linear-gradient(135deg, #6868c0, var(--aosan-navy)); color: #fff; }
+.aosan-card--rose .aosan-card__footer { background: linear-gradient(135deg, #eac1ca, var(--aosan-rose)); }
+.aosan-card--mint .aosan-card__footer { background: linear-gradient(135deg, #b0ddd3, var(--aosan-mint)); }
+.aosan-card--sand .aosan-card__footer { background: linear-gradient(135deg, #f8eadc, #d9c0ab); }
+.aosan-exclusive-footer { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; color: var(--aosan-muted); font-size: .75rem; }
+.aosan-exclusive-footer__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--aosan-gold); box-shadow: 0 0 12px var(--aosan-gold); }
+@media (max-width: 650px) { .aosan-showcase { padding: 10px; border-radius: 18px; } .aosan-exclusive-header { display: block; min-height: 0; padding: 28px 20px 22px; } .aosan-exclusive-header__ornament { top: 10px; left: 15px; font-size: 1.7rem; } .aosan-exclusive-header__cta { display: flex; width: max-content; margin-top: 20px; } .aosan-section { padding: 17px 12px 13px; border-radius: 18px; } .aosan-section__heading { gap: 8px; margin-bottom: 14px; } .aosan-section__heading h2 { font-size: .93rem; } .aosan-section__scroller { grid-auto-columns: 145px; gap: 10px; } .aosan-card__footer { min-height: 48px; padding-inline: 7px; font-size: .81rem; } }
+@media (prefers-reduced-motion: reduce) { .aosan-card, .aosan-card__image, .aosan-card__shine, .aosan-exclusive-header__cta, .aosan-card__footer svg { transition: none; } }

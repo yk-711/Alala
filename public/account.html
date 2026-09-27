@@ -1,1 +1,42 @@
-
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>حسابي | متجر سطول</title>
+<link rel="stylesheet" href="login.css">
+</head>
+<body>
+<main class="auth-card" style="max-width:760px;grid-template-columns:1fr;">
+<section class="form-area">
+<div class="form-box">
+<div class="security-mark" aria-hidden="true">✦</div>
+<h2>حسابي</h2>
+<p class="hint" id="accountStatus">جارٍ التحقق من جلسة الدخول...</p>
+<div id="accountInfo" style="display:none;text-align:center;line-height:2">
+<p><strong id="accountName"></strong></p>
+<p id="accountEmail" style="color:#aaa"></p>
+<button class="main-btn" id="logoutButton" type="button">تسجيل الخروج</button>
+</div>
+<a class="back-store" href="/">العودة إلى المتجر</a>
+</div>
+</section>
+</main>
+<script>
+(async()=>{
+ const status=document.getElementById('accountStatus'), info=document.getElementById('accountInfo');
+ try{
+  const r=await fetch('/api/auth/me',{credentials:'include'});
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.message||'غير مسجل الدخول');
+  document.getElementById('accountName').textContent=d.user.name;
+  document.getElementById('accountEmail').textContent=d.user.email;
+  status.textContent='تم تسجيل الدخول بنجاح.';
+  info.style.display='block';
+ }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='/login.html',1000); }
+ document.getElementById('logoutButton').onclick=async()=>{
+  await fetch('/api/auth/logout',{method:'POST',credentials:'include'});
+  location.href='/login.html';
+ };
+})();
+</script>
+</body></html>
