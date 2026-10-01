@@ -89,7 +89,7 @@ async function publishToGitHub() {
   const result = await query(`SELECT id,title,description,category,category_slugs,audience,image_url,old_price,price,rating,reviews,tags,prep_time,badges,active,selected,sort_order,created_at,updated_at FROM products ORDER BY sort_order ASC, created_at DESC`);
   const categories = await query(`SELECT id,name,slug,image_url,active,sort_order FROM categories ORDER BY sort_order ASC, name ASC`);
   const payload = { version: 1, generated_at: new Date().toISOString(), categories: categories.rows, products: result.rows };
-  await githubPutFile(cfg.pathName, Buffer.from(JSON.stringify(payload, null, 2), "utf8"), "تحديث منتجات متجر سطول");
+  await githubPutFile(cfg.pathName, Buffer.from(JSON.stringify(payload, null, 2), "utf8"), "تحديث منتجات متجر نسمة");
   return { path: cfg.pathName, products: result.rows.length, categories: categories.rows.length };
 }
 
