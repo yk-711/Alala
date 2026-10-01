@@ -138,7 +138,7 @@ async function forgotPassword() {
 document.getElementById("forgotButton").addEventListener("click", forgotPassword);
 
 function startGoogleAuth() {
-  window.location.href = "https://nesma-store.onrender.com/api/auth/google";
+  window.location.href = `${API_BASE}/api/auth/google`;
 }
 
 const googleButton = document.getElementById("googleLoginButton");
@@ -146,9 +146,23 @@ if (googleButton) {
   googleButton.addEventListener("click", startGoogleAuth);
 }
 
+handleGoogleError();
+
 const googleRegisterButton = document.getElementById("googleRegisterButton");
 if (googleRegisterButton) {
   googleRegisterButton.addEventListener("click", startGoogleAuth);
+}
+
+function handleGoogleError() {
+  const error = new URLSearchParams(window.location.search).get("error");
+  if (!error) return;
+  const messages = {
+    google_not_configured: "تسجيل الدخول عبر Google غير مفعّل بعد.",
+    google_cancelled: "تم إلغاء تسجيل الدخول عبر Google.",
+    google_state: "انتهت جلسة Google، حاول مرة أخرى.",
+    google_failed: "تعذر إكمال تسجيل الدخول عبر Google. حاول مرة أخرى."
+  };
+  if (messages[error]) showMessage("loginMessage", messages[error], "error");
 }
 
 function showMessage(id, text, type = "") {
