@@ -1,4 +1,4 @@
-const API_BASE = "https://sotool-store.onrender.com"; // الـAPI يعمل من نفس نطاق الموقع على Render
+const API_BASE = "https://nesma-store.onrender.com"; // الـAPI يعمل من نفس نطاق الموقع على Render
 
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
@@ -138,7 +138,7 @@ async function forgotPassword() {
 document.getElementById("forgotButton").addEventListener("click", forgotPassword);
 
 function startGoogleAuth() {
-  window.location.href = "https://sotool-store.onrender.com/api/auth/google";
+  window.location.href = "https://nesma-store.onrender.com/api/auth/google";
 }
 
 const googleButton = document.getElementById("googleLoginButton");

@@ -5,7 +5,7 @@
   let products=[], categories=[], imageData='';
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   function message(t,error=false){msg.textContent=t||'';msg.className='message '+(error?'error':'');}
-  const API_BASE='https://sotool-store.onrender.com';
+  const API_BASE='https://nesma-store.onrender.com';
   async function api(url,options={}){const target=url.startsWith('http')?url:API_BASE+url;const r=await fetch(target,{credentials:'include',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||'حدث خطأ.');return d;}
   async function boot(){try{await api('/api/admin/me');guard.classList.add('hidden');panel.classList.remove('hidden');await Promise.all([loadProducts(),loadCategories(),githubStatus()]);renderChecks();}catch(e){guard.innerHTML='<h1>غير مصرح بالدخول</h1><p>سجلي الدخول بحساب المدير المحدد في ADMIN_EMAIL.</p><a class="primary" href="login.html">تسجيل الدخول</a>';}}
   async function loadProducts(){products=(await api('/api/admin/products')).products||[];renderProducts();}

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>حسابي | متجر سطول</title>
+<title>حسابي | متجر نسمة</title>
 <link rel="stylesheet" href="login.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
 (async()=>{
  const status=document.getElementById('accountStatus'), info=document.getElementById('accountInfo');
  try{
-  const r=await fetch('https://sotool-store.onrender.com/api/auth/me',{credentials:'include'});
+  const r=await fetch('https://nesma-store.onrender.com/api/auth/me',{credentials:'include'});
   const d=await r.json();
   if(!r.ok) throw new Error(d.message||'غير مسجل الدخول');
   document.getElementById('accountName').textContent=d.user.name;
@@ -34,7 +34,7 @@
   info.style.display='block';
  }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='login.html',1000); }
  document.getElementById('logoutButton').onclick=async()=>{
-  await fetch('https://sotool-store.onrender.com/api/auth/logout',{method:'POST',credentials:'include'});
+  await fetch('https://nesma-store.onrender.com/api/auth/logout',{method:'POST',credentials:'include'});
   location.href='login.html';
  };
 })();

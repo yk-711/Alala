@@ -37,7 +37,7 @@ form.addEventListener("submit", async event => {
   if (password !== confirm) return showMessage("كلمتا المرور غير متطابقتين.", "error");
   setLoading(button, true);
   try {
-    const response = await fetch("https://sotool-store.onrender.com/api/auth/reset-password", {
+    const response = await fetch("https://nesma-store.onrender.com/api/auth/reset-password", {
       method: "POST",
       credentials: "same-origin",
       headers: {"Content-Type":"application/json"},

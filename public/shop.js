@@ -1,10 +1,10 @@
 (() => {
-  const state={products:[],categories:[],cart:JSON.parse(localStorage.getItem('sotool-cart')||'[]'),wish:new Set(JSON.parse(localStorage.getItem('sotool-wishlist')||'[]'))};
+  const state={products:[],categories:[],cart:JSON.parse(localStorage.getItem('nesma-cart')||'[]'),wish:new Set(JSON.parse(localStorage.getItem('nesma-wishlist')||'[]'))};
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const money=(n,c='ر.س')=>`${Number(n||0).toFixed(2)} ${c}`;
-  async function load(){const [p,c]=await Promise.all([fetch('https://sotool-store.onrender.com/api/products', {credentials:'include'}).then(r=>r.json()),fetch('https://sotool-store.onrender.com/api/categories', {credentials:'include'}).then(r=>r.json())]);state.products=p.products||[];state.categories=c.categories||[];document.dispatchEvent(new CustomEvent('sotool:data-ready',{detail:state}));}
-  function saveWish(){localStorage.setItem('sotool-wishlist',JSON.stringify([...state.wish]));}
-  function saveCart(){localStorage.setItem('sotool-cart',JSON.stringify(state.cart));}
+  async function load(){const [p,c]=await Promise.all([fetch('https://nesma-store.onrender.com/api/products', {credentials:'include'}).then(r=>r.json()),fetch('https://nesma-store.onrender.com/api/categories', {credentials:'include'}).then(r=>r.json())]);state.products=p.products||[];state.categories=c.categories||[];document.dispatchEvent(new CustomEvent('nesma:data-ready',{detail:state}));}
+  function saveWish(){localStorage.setItem('nesma-wishlist',JSON.stringify([...state.wish]));}
+  function saveCart(){localStorage.setItem('nesma-cart',JSON.stringify(state.cart));}
   function product(id){return state.products.find(p=>String(p.id)===String(id));}
   function discount(p){return p.old_price&&Number(p.old_price)>Number(p.price)?Math.round((Number(p.old_price)-Number(p.price))/Number(p.old_price)*100):0;}
   function card(p){const d=discount(p);return `<article class="shop-card" data-id="${p.id}"><div class="shop-img"><img src="${esc(p.image_url)}" alt="${esc(p.title)}" loading="lazy"><div class="shop-badges">${(p.badges||[]).map((b,i)=>`<span class="shop-badge ${i?'limit':''}">${esc(b)}</span>`).join('')}</div><button class="shop-heart ${state.wish.has(String(p.id))?'active':''}" data-wish="${p.id}">${state.wish.has(String(p.id))?'♥':'♡'}</button></div><div class="shop-body"><div class="shop-cat">${esc((p.category_slugs||[p.category])[0]||'عام')}</div><div class="shop-title">${esc(p.title)}</div><div class="shop-price"><strong>${money(p.price,p.currency||'ر.س')}</strong>${p.old_price?`<span class="shop-old">${money(p.old_price,p.currency||'ر.س')}</span>`:''}${d?`<span class="shop-discount">خصم ${d}%</span>`:''}</div><div class="shop-actions"><button class="shop-add" data-add="${p.id}">أضف للسلة</button><button class="shop-open" data-open="${p.id}">عرض</button></div></div></article>`;}

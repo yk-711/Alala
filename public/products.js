@@ -3,7 +3,7 @@
     const grid = document.getElementById('mgrid');
     if (!grid) return;
     try {
-      const response = await fetch('https://sotool-store.onrender.com/api/products', { credentials: 'include' });
+      const response = await fetch('https://nesma-store.onrender.com/api/products', { credentials: 'include' });
       if (!response.ok) return;
       const { products } = await response.json();
       if (!Array.isArray(products) || !products.length) return;
