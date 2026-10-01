@@ -18,8 +18,21 @@ const port = Number(process.env.PORT || 3000);
 app.disable("x-powered-by");
 app.use(express.json({ limit: "8mb" }));
 app.use(cookieParser());
-const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${port}`;
-app.use(cors({ origin: frontendUrl, credentials: true }));
+const configuredFrontend = String(process.env.FRONTEND_URL || "").trim().replace(/\/$/, "");
+const allowedOrigins = new Set([
+  "https://nesma-store.pages.dev",
+  configuredFrontend,
+  `http://localhost:${port}`,
+  "http://127.0.0.1:" + port
+].filter(Boolean));
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(new Error("CORS origin not allowed."));
+  },
+  credentials: true
+}));
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: "draft-8", legacyHeaders: false, message: { message: "محاولات كثيرة. حاول مرة أخرى بعد قليل." } });
 
 function isAdmin(req) {

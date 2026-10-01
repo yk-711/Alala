@@ -95,8 +95,8 @@ export async function login(req, res) {
 
   res.cookie("auth_token", token, {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
     maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000,
     path: "/"
   });
@@ -111,8 +111,8 @@ export async function login(req, res) {
 export async function logout(req, res) {
   res.clearCookie("auth_token", {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
     path: "/"
   });
   return res.json({ message: "تم تسجيل الخروج." });
@@ -262,20 +262,26 @@ function sessionCookie(res, user, remember = true) {
   );
   res.cookie("auth_token", token, {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
     maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000,
     path: "/"
   });
 }
 
-function accountRedirectUrl(req) {
-  // Use the configured frontend origin when available; otherwise stay on the
-  // same origin that handled the OAuth callback. This makes the post-Google
-  // redirect deterministic in both local and Render deployments.
+function frontendUrl(req) {
   const configured = String(process.env.FRONTEND_URL || "").trim().replace(/\/$/, "");
-  if (configured) return `${configured}/account.html`;
-  return `${req.protocol}://${req.get("host")}/account.html`;
+  if (configured) return configured;
+  if (process.env.NODE_ENV === "production") return "https://nesma-store.pages.dev";
+  return `${req.protocol}://${req.get("host")}`;
+}
+
+function accountRedirectUrl(req) {
+  return `${frontendUrl(req)}/account.html`;
+}
+
+function loginRedirectUrl(req, error) {
+  return `${frontendUrl(req)}/login.html?error=${encodeURIComponent(error)}`;
 }
 
 export function googleStart(req, res) {
@@ -287,8 +293,8 @@ export function googleStart(req, res) {
   const state = randomBytes(32).toString("hex");
   res.cookie("google_oauth_state", state, {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
     maxAge: 10 * 60 * 1000,
     path: "/"
   });
@@ -309,15 +315,15 @@ export async function googleCallback(req, res) {
 
   res.clearCookie("google_oauth_state", {
     httpOnly: true,
-    secure: process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
     path: "/"
   });
 
-  if (!client) return res.redirect("/login.html?error=google_not_configured");
-  if (error) return res.redirect("/login.html?error=google_cancelled");
+  if (!client) return res.redirect(loginRedirectUrl(req, "google_not_configured"));
+  if (error) return res.redirect(loginRedirectUrl(req, "google_cancelled"));
   if (!code || !state || !stateCookie || state !== stateCookie) {
-    return res.redirect("/login.html?error=google_state");
+    return res.redirect(loginRedirectUrl(req, "google_state"));
   }
 
   try {
@@ -373,6 +379,6 @@ export async function googleCallback(req, res) {
     return res.redirect(accountRedirectUrl(req));
   } catch (error) {
     console.error("Google OAuth error:", error);
-    return res.redirect("/login.html?error=google_failed");
+    return res.redirect(loginRedirectUrl(req, "google_failed"));
   }
 }
