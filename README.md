@@ -1,4 +1,4 @@
-# متجر سطول — النسخة المصححة
+# متجر نسمة — النسخة المصححة
 
 تم إصلاح وتجهيز النسخة وفق المطلوب:
 - حذف الشريط العلوي الذي يحتوي رقم الهاتف والبريد وروابط التواصل.
@@ -24,4 +24,4 @@
 \n## Google OAuth\n
 في Render أضف المتغيرات `GOOGLE_CLIENT_ID` و`GOOGLE_CLIENT_SECRET` و`GOOGLE_CALLBACK_URL`.
 يجب أن يكون عنوان Callback في Google Cloud مطابقاً تماماً:
-`https://sotool-store.onrender.com/api/auth/google/callback`
+`https://nesma-store.onrender.com/api/auth/google/callback`
