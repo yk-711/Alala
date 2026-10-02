@@ -104,7 +104,7 @@ registerForm.addEventListener("submit", async event => {
   try {
     const data = await api("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ name, email, password, referral_code: document.getElementById("registerReferral")?.value.trim() || new URLSearchParams(location.search).get("ref") || "" })
     });
 
     showMessage("registerMessage", data.message || "تم إنشاء الحساب بنجاح", "success");
@@ -138,7 +138,8 @@ async function forgotPassword() {
 document.getElementById("forgotButton").addEventListener("click", forgotPassword);
 
 function startGoogleAuth() {
-  window.location.href = `${API_BASE}/api/auth/google`;
+  const ref = new URLSearchParams(location.search).get("ref") || document.getElementById("registerReferral")?.value.trim() || "";
+  window.location.href = `${API_BASE}/api/auth/google${ref ? `?ref=${encodeURIComponent(ref)}` : ""}`;
 }
 
 const googleButton = document.getElementById("googleLoginButton");
