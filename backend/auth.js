@@ -17,8 +17,14 @@ function publicUser(user) {
     email: user.email,
     provider: user.provider,
     emailVerified: user.email_verified,
-    createdAt: user.created_at
+    createdAt: user.created_at,
+    referralCode: user.referral_code || null,
+    points: Number(user.points || 0)
   };
+}
+
+function makeReferralCode() {
+  return `NESMA-${randomBytes(3).toString("hex").toUpperCase()}`;
 }
 
 export async function register(req, res) {
@@ -46,13 +52,20 @@ export async function register(req, res) {
   }
 
   const passwordHash = await bcrypt.hash(password, PASSWORD_ROUNDS);
-
-  const result = await query(
-    `INSERT INTO users (name, email, password_hash, provider)
-     VALUES ($1, $2, $3, 'local')
-     RETURNING id, name, email, provider, email_verified, created_at`,
-    [cleanName, cleanEmail, passwordHash]
-  );
+  let result;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      result = await query(
+        `INSERT INTO users (name, email, password_hash, provider, referral_code)
+         VALUES ($1, $2, $3, 'local', $4)
+         RETURNING id, name, email, provider, email_verified, created_at, referral_code, points`,
+        [cleanName, cleanEmail, passwordHash, makeReferralCode()]
+      );
+      break;
+    } catch (e) {
+      if (e.code !== '23505' || !String(e.detail || e.message).includes('referral')) throw e;
+    }
+  }
 
   return res.status(201).json({
     message: "تم إنشاء الحساب بنجاح.",
@@ -69,7 +82,7 @@ export async function login(req, res) {
   }
 
   const result = await query(
-    `SELECT id, name, email, password_hash, provider, email_verified, created_at
+    `SELECT id, name, email, password_hash, provider, email_verified, created_at, referral_code, points
      FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
     [cleanEmail]
   );
@@ -234,7 +247,7 @@ export function authenticate(req, res, next) {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
 
     query(
-      `SELECT id, name, email, provider, email_verified, created_at
+      `SELECT id, name, email, provider, email_verified, created_at, referral_code, points
        FROM users WHERE id=$1 LIMIT 1`,
       [payload.sub]
     ).then(result => {
@@ -346,7 +359,7 @@ export async function googleCallback(req, res) {
     }
 
     let result = await query(
-      `SELECT id, name, email, password_hash, provider, provider_id, email_verified, created_at
+      `SELECT id, name, email, password_hash, provider, provider_id, email_verified, created_at, referral_code, points
        FROM users WHERE LOWER(email)=LOWER($1) LIMIT 1`,
       [email]
     );
@@ -356,19 +369,19 @@ export async function googleCallback(req, res) {
       user = result.rows[0];
       await query(
         `UPDATE users
-         SET provider='google', provider_id=$1, email_verified=$2, updated_at=NOW()
+         SET provider='google', provider_id=$1, email_verified=$2, referral_code=COALESCE(referral_code,$3), updated_at=NOW()
          WHERE id=$3`,
-        [googleId, emailVerified, user.id]
+        [googleId, emailVerified, user.id, makeReferralCode()]
       );
       user.provider = "google";
       user.provider_id = googleId;
       user.email_verified = emailVerified;
     } else {
       const created = await query(
-        `INSERT INTO users (name,email,password_hash,provider,provider_id,email_verified)
-         VALUES ($1,$2,NULL,'google',$3,$4)
-         RETURNING id,name,email,password_hash,provider,provider_id,email_verified,created_at`,
-        [name, email, googleId, emailVerified]
+        `INSERT INTO users (name,email,password_hash,provider,provider_id,email_verified,referral_code)
+         VALUES ($1,$2,NULL,'google',$3,$4,$5)
+         RETURNING id,name,email,password_hash,provider,provider_id,email_verified,created_at,referral_code,points`,
+        [name, email, googleId, emailVerified, makeReferralCode()]
       );
       user = created.rows[0];
     }
