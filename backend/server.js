@@ -40,7 +40,7 @@ const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHea
 
 function isAdmin(req) {
   const configured = String(process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  const adminEmail = configured || "younesalkiser@gmail.com";
+  const adminEmail = "younesalkiser712@gmail.com";
   return Boolean(req.user?.email && String(req.user.email).trim().toLowerCase() === adminEmail);
 }
 function requireAdmin(req, res, next) {
@@ -211,8 +211,14 @@ async function ensureOrderSchema() {
       // CREATE TABLE IF NOT EXISTS does not modify an existing table, so every
       // column used by checkout/account/admin must also be added explicitly.
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS product_id UUID REFERENCES products(id) ON DELETE SET NULL`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS title VARCHAR(200)`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT ''`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT ''`);
+      // Keep compatibility with legacy order_items where title is NOT NULL and
+      // newer code uses name. Fill both fields and make title safe for future inserts.
+      await query(`UPDATE order_items SET title=COALESCE(NULLIF(title,''),NULLIF(name,''),'منتج') WHERE title IS NULL OR title=''`);
+      await query(`UPDATE order_items SET name=COALESCE(NULLIF(name,''),NULLIF(title,''),'منتج') WHERE name IS NULL OR name=''`);
+      await query(`ALTER TABLE order_items ALTER COLUMN title SET DEFAULT 'منتج'`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS price_yer NUMERIC(12,2) NOT NULL DEFAULT 0`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS quantity INTEGER NOT NULL DEFAULT 1`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS size VARCHAR(100) NOT NULL DEFAULT ''`);
@@ -271,7 +277,10 @@ app.post("/api/orders", async (req,res,next)=>{
       o=await query(`INSERT INTO orders(user_id,status,customer_name,phone,city,address,notes,currency,total_yer) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id,status,total_yer,created_at`,baseValues);
     }
     if(!o.rows[0]?.id) throw new Error('تعذر إنشاء الطلب.');
-    for(const x of items) await query(`INSERT INTO order_items(order_id,product_id,name,image_url,price_yer,quantity,size,color,fabric) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[o.rows[0].id,x.product_id,x.name,x.image_url,x.price_yer,x.quantity,x.size,x.color,x.fabric]);
+    for(const x of items) {
+      const itemName = String(x.name || x.title || 'منتج').trim() || 'منتج';
+      await query(`INSERT INTO order_items(order_id,product_id,title,name,image_url,price_yer,quantity,size,color,fabric) VALUES($1,$2,$3,$3,$4,$5,$6,$7,$8,$9,$10)`,[o.rows[0].id,x.product_id,itemName,x.image_url,x.price_yer,x.quantity,x.size,x.color,x.fabric]);
+    }
     res.status(201).json({order:o.rows[0],message:'تم حفظ الطلب بنجاح.'});
   }catch(e){next(e)}
 });

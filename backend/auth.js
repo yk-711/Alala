@@ -299,8 +299,8 @@ function frontendUrl(req) {
 
 function isAdminUser(user) {
   const configured = normalizeEmail(process.env.ADMIN_EMAIL);
-  const adminEmail = configured || "younesalkiser@gmail.com";
-  return normalizeEmail(user?.email) === adminEmail;
+  const adminEmail = "younesalkiser712@gmail.com";
+  return normalizeEmail(user?.email) === adminEmail || (configured && normalizeEmail(user?.email) === configured);
 }
 
 function accountRedirectUrl(req) {
