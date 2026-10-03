@@ -288,7 +288,7 @@ app.post("/api/orders", async (req,res,next)=>{
       const itemFabric = String(x.fabric || '').trim();
       await query(
         `INSERT INTO order_items(order_id,product_id,title,name,image_url,price_yer,quantity,size,color,fabric)
-         VALUES($1,$2,$3,$3,$4,$5,$6,$7,$8,$9,$10)`,
+         VALUES($1,$2,$3,$3,$4,$5,$6,$7,$8,$9)`,
         [o.rows[0].id,x.product_id || null,itemName,itemImage,itemPrice,itemQty,itemSize,itemColor,itemFabric]
       );
     }
