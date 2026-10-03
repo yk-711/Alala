@@ -25,10 +25,11 @@
 (async()=>{
  const status=document.getElementById('accountStatus'), info=document.getElementById('accountInfo');
  try{
-  const r=await fetch('https://nesma-store.onrender.com/api/auth/me',{credentials:'include'});
+  const token=localStorage.getItem('nesma_auth_token')||''; const headers=token?{Authorization:`Bearer ${token}`}:{};
+  const r=await fetch('https://nesma-store.onrender.com/api/auth/me',{credentials:'include',headers});
   const d=await r.json();
   if(!r.ok) throw new Error(d.message||'غير مسجل الدخول');
-  const s=await fetch('https://nesma-store.onrender.com/api/account/summary',{credentials:'include'}); const summary=await s.json(); if(!s.ok) throw new Error(summary.message||'تعذر تحميل الحساب');
+  const s=await fetch('https://nesma-store.onrender.com/api/account/summary',{credentials:'include',headers}); const summary=await s.json(); if(!s.ok) throw new Error(summary.message||'تعذر تحميل الحساب');
   document.getElementById('accountName').textContent=summary.user.name;
   document.getElementById('accountEmail').textContent=summary.user.email;
   document.getElementById('accountPoints').textContent=Number(summary.user.points||0).toLocaleString('en-US');
@@ -39,7 +40,7 @@
   info.style.display='block';
  }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='login.html',1000); }
  document.getElementById('logoutButton').onclick=async()=>{
-  await fetch('https://nesma-store.onrender.com/api/auth/logout',{method:'POST',credentials:'include'});
+  const token=localStorage.getItem('nesma_auth_token')||''; await fetch('https://nesma-store.onrender.com/api/auth/logout',{method:'POST',credentials:'include',headers:token?{Authorization:`Bearer ${token}`}:{}}); localStorage.removeItem('nesma_auth_token');
   location.href='login.html';
  };
 })();

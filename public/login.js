@@ -30,11 +30,17 @@ document.querySelectorAll("[data-password]").forEach(button => {
   });
 });
 
+function getAuthToken() {
+  return localStorage.getItem("nesma_auth_token") || "";
+}
+
 async function api(path, options = {}) {
+  const token = getAuthToken();
   const response = await fetch(`${API_BASE}/api${path}`, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {})
     },
     ...options
@@ -64,6 +70,7 @@ loginForm.addEventListener("submit", async event => {
       })
     });
 
+    if (data.token) localStorage.setItem("nesma_auth_token", data.token);
     showMessage("loginMessage", data.message || "تم تسجيل الدخول بنجاح", "success");
 
     // عدّل المسار حسب موقع الصفحة الرئيسية في مشروعك.
@@ -143,7 +150,20 @@ async function forgotPassword() {
 document.getElementById("forgotButton").addEventListener("click", forgotPassword);
 
 function startGoogleAuth() {
-  window.location.href = `${API_BASE}/api/auth/google`;
+  const params = new URLSearchParams(window.location.search);
+  const returnTo = params.get("returnTo") === "admin.html" ? "admin.html" : "account.html";
+  window.location.href = `${API_BASE}/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+function handleGoogleToken() {
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const token = hash.get("google_token");
+  if (!token) return;
+
+  localStorage.setItem("nesma_auth_token", token);
+  const target = hash.get("redirect") === "admin.html" ? "admin.html" : "account.html";
+  history.replaceState({}, document.title, window.location.pathname);
+  window.location.replace(target);
 }
 
 const googleButton = document.getElementById("googleLoginButton");
@@ -152,6 +172,7 @@ if (googleButton) {
 }
 
 handleGoogleError();
+handleGoogleToken();
 
 const googleRegisterButton = document.getElementById("googleRegisterButton");
 if (googleRegisterButton) {

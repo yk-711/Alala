@@ -16,7 +16,7 @@
 
   accountBtn?.addEventListener('click', async e => {
     e.preventDefault();
-    try { const r = await fetch(`${API}/api/auth/me`, {credentials:'include'}); location.href = r.ok ? 'account.html' : 'login.html'; }
+    try { const token=localStorage.getItem('nesma_auth_token')||''; const r = await fetch(`${API}/api/auth/me`, {credentials:'include',headers:token?{Authorization:`Bearer ${token}`}:{}}); location.href = r.ok ? 'account.html' : 'login.html'; }
     catch { location.href = 'login.html'; }
   });
   cartFab?.addEventListener('click', () => { location.href = 'cart.html'; });
