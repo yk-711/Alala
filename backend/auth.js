@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, createHmac, timingSafeEqual } from "node:crypto";
 import { query } from "./db.js";
 import { OAuth2Client } from "google-auth-library";
 
@@ -315,29 +315,50 @@ function loginRedirectUrl(req, error) {
   return `${frontendUrl(req)}/login.html?error=${encodeURIComponent(error)}`;
 }
 
+function oauthStateSecret() {
+  return String(process.env.JWT_SECRET || process.env.GOOGLE_CLIENT_SECRET || "").trim();
+}
+
+function makeGoogleState(returnTo) {
+  const secret = oauthStateSecret();
+  if (!secret) throw new Error("JWT_SECRET أو GOOGLE_CLIENT_SECRET غير مضبوط.");
+  const payload = Buffer.from(JSON.stringify({
+    returnTo,
+    issuedAt: Date.now(),
+    nonce: randomBytes(16).toString("hex")
+  })).toString("base64url");
+  const signature = createHmac("sha256", secret).update(payload).digest("base64url");
+  return `${payload}.${signature}`;
+}
+
+function readGoogleState(value) {
+  try {
+    const secret = oauthStateSecret();
+    const [payload, signature] = String(value || "").split(".");
+    if (!secret || !payload || !signature) return null;
+    const expected = createHmac("sha256", secret).update(payload).digest("base64url");
+    const a = Buffer.from(signature);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+    const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (!data.issuedAt || Date.now() - Number(data.issuedAt) > 10 * 60 * 1000) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 export function googleStart(req, res) {
   const client = googleClient();
   if (!client) {
-    return res.status(503).send("تسجيل الدخول عبر Google غير مفعّل بعد.");
+    return res.status(503).send("تسجيل الدخول عبر Google غير مفعّل بعد. تأكد من GOOGLE_CLIENT_ID وGOOGLE_CLIENT_SECRET وGOOGLE_CALLBACK_URL.");
   }
 
   const requestedReturnTo = String(req.query.returnTo || "account.html").trim();
   const returnTo = requestedReturnTo === "admin.html" ? "admin.html" : "account.html";
-  const state = randomBytes(32).toString("hex");
-  res.cookie("google_oauth_state", state, {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
-    sameSite: process.env.COOKIE_SAMESITE || "none",
-    maxAge: 10 * 60 * 1000,
-    path: "/"
-  });
-  res.cookie("google_return_to", returnTo, {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
-    sameSite: process.env.COOKIE_SAMESITE || "none",
-    maxAge: 10 * 60 * 1000,
-    path: "/"
-  });
+  let state;
+  try { state = makeGoogleState(returnTo); }
+  catch (error) { return res.status(503).send(error.message); }
 
   const url = client.generateAuthUrl({
     access_type: "online",
@@ -350,27 +371,13 @@ export function googleStart(req, res) {
 
 export async function googleCallback(req, res) {
   const client = googleClient();
-  const stateCookie = req.cookies.google_oauth_state;
-  const returnTo = req.cookies.google_return_to === "admin.html" ? "admin.html" : "account.html";
   const { code, state, error } = req.query;
-
-  res.clearCookie("google_oauth_state", {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
-    sameSite: process.env.COOKIE_SAMESITE || "none",
-    path: "/"
-  });
-
-  res.clearCookie("google_return_to", {
-    httpOnly: true,
-    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
-    sameSite: process.env.COOKIE_SAMESITE || "none",
-    path: "/"
-  });
+  const stateData = readGoogleState(state);
+  const returnTo = stateData?.returnTo === "admin.html" ? "admin.html" : "account.html";
 
   if (!client) return res.redirect(loginRedirectUrl(req, "google_not_configured"));
   if (error) return res.redirect(loginRedirectUrl(req, "google_cancelled"));
-  if (!code || !state || !stateCookie || state !== stateCookie) {
+  if (!code || !stateData) {
     return res.redirect(loginRedirectUrl(req, "google_state"));
   }
 
@@ -424,7 +431,9 @@ export async function googleCallback(req, res) {
     // The frontend and API are on different domains. Return the JWT in the URL
     // fragment so JavaScript can store it without sending it in an HTTP request.
     // The fragment is not sent to the server or normal referrer headers.
-    const target = isAdminUser(user) && returnTo === "admin.html" ? "admin.html" : "account.html";
+    // The admin email always goes to the admin dashboard, even when Google login
+    // was started from the normal login page. Other accounts always go to account.html.
+    const target = isAdminUser(user) ? "admin.html" : "account.html";
     const token = createSessionToken(user, true);
     return res.redirect(`${frontendUrl(req)}/login.html#google_token=${encodeURIComponent(token)}&redirect=${encodeURIComponent(target)}`);
   } catch (error) {

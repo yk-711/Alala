@@ -21,6 +21,9 @@ app.use(cookieParser());
 const configuredFrontend = String(process.env.FRONTEND_URL || "").trim().replace(/\/$/, "");
 const allowedOrigins = new Set([
   "https://nesma-store.pages.dev",
+  "https://nesma-store.com",
+  "https://www.nesma-store.com",
+  "https://yk-711.github.io",
   configuredFrontend,
   `http://localhost:${port}`,
   "http://127.0.0.1:" + port
@@ -159,7 +162,7 @@ async function awardOrderPoints(orderId) {
   return { buyer, referral };
 }
 
-app.get("/api/health", async (_req, res) => { try { await query("SELECT 1"); res.json({ ok: true, database: "connected", github: githubConfig().enabled }); } catch { res.status(503).json({ ok: false, database: "unavailable", github: githubConfig().enabled }); } });
+app.get("/api/health", async (_req, res) => { try { const c=await query(`SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='orders'`); res.json({ ok: true, database: "connected", github: githubConfig().enabled, orders: { referral_code: c.rows.some(r=>r.column_name==='referral_code'), referral_user_id: c.rows.some(r=>r.column_name==='referral_user_id') } }); } catch (e) { res.status(503).json({ ok: false, database: "unavailable", error: e.message }); } });
 app.get("/api/auth/google", googleStart); app.get("/api/auth/google/callback", googleCallback);
 app.post("/api/auth/register", authLimiter, register); app.post("/api/auth/login", authLimiter, login); app.post("/api/auth/logout", logout); app.get("/api/auth/me", authenticate, me); app.post("/api/auth/forgot-password", authLimiter, forgotPassword); app.post("/api/auth/reset-password", authLimiter, resetPassword);
 app.get("/api/admin/me", authenticate, (req, res) => isAdmin(req) ? res.json({ ok: true, user: req.user }) : res.status(403).json({ message: "غير مصرح." }));
@@ -212,11 +215,54 @@ async function ensureOrderSchema() {
   return orderSchemaReady;
 }
 
-app.post("/api/orders", async (req,res,next)=>{try{await ensureOrderSchema();const items=parseCartItems(req.body.items);for(const x of items){if(!x.product_id)throw new Error('بيانات المنتج غير صالحة.');const pr=await query(`SELECT id,title,image_url,price FROM products WHERE id=$1 AND active=true LIMIT 1`,[x.product_id]);if(!pr.rowCount)throw new Error('أحد المنتجات لم يعد متاحاً.');x.price_yer=Number(pr.rows[0].price);x.name=pr.rows[0].title;x.image_url=pr.rows[0].image_url||x.image_url;}const total=items.reduce((sum,x)=>sum+x.price_yer*x.quantity,0);if(!total)return res.status(400).json({message:'إجمالي الطلب غير صالح.'});const referralCode=String(req.body.referral_code||'').trim().toUpperCase()||null;let referralUserId=null;if(referralCode){const rr=await query(`SELECT id FROM users WHERE referral_code=$1 LIMIT 1`,[referralCode]);if(rr.rowCount)referralUserId=rr.rows[0].id;}let userId=null;try{if(req.headers.cookie){/* JWT remains httpOnly; authenticate middleware is intentionally not required for guest checkout. */}}catch{}
-const authToken=req.cookies?.auth_token; if(authToken){try{const jwt=(await import('jsonwebtoken')).default;const payload=jwt.verify(authToken,process.env.JWT_SECRET);userId=payload.sub||null;}catch{}}
-const o=await query(`INSERT INTO orders(user_id,status,customer_name,phone,city,address,notes,currency,total_yer,referral_code,referral_user_id) VALUES($1,'pending',$2,$3,$4,$5,$6,'YER',$7,$8,$9) RETURNING id,status,total_yer,created_at`,[userId,String(req.body.name||'').trim().slice(0,150),String(req.body.phone||'').trim().slice(0,50),String(req.body.city||'').trim().slice(0,100),String(req.body.address||'').trim(),String(req.body.notes||'').trim(),total,referralCode,referralUserId]);
-if(!o.rows[0].id)throw new Error('تعذر إنشاء الطلب.');for(const x of items) await query(`INSERT INTO order_items(order_id,product_id,name,image_url,price_yer,quantity,size,color,fabric) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[o.rows[0].id,x.product_id,x.name,x.image_url,x.price_yer,x.quantity,x.size,x.color,x.fabric]);res.status(201).json({order:o.rows[0],message:'تم حفظ الطلب بنجاح.'});}catch(e){next(e)}});
+app.post("/api/orders", async (req,res,next)=>{
+  try {
+    try { await ensureOrderSchema(); } catch (schemaError) {
+      console.error("Order schema migration warning:", schemaError);
+      // Continue: the INSERT below detects the columns that actually exist.
+      // This keeps guest checkout working on older/read-only PostgreSQL deployments.
+    }
+    const items=parseCartItems(req.body.items);
+    if (!String(req.body.name||'').trim() || !String(req.body.phone||'').trim() || !String(req.body.city||'').trim() || !String(req.body.address||'').trim()) {
+      return res.status(400).json({message:'أكمل الاسم ورقم الهاتف والمدينة والعنوان.'});
+    }
+    for(const x of items){
+      if(!x.product_id) throw new Error('بيانات المنتج غير صالحة.');
+      const pr=await query(`SELECT id,title,image_url,price FROM products WHERE id=$1 AND active=true LIMIT 1`,[x.product_id]);
+      if(!pr.rowCount) throw new Error('أحد المنتجات لم يعد متاحاً.');
+      x.price_yer=Number(pr.rows[0].price); x.name=pr.rows[0].title; x.image_url=pr.rows[0].image_url||x.image_url;
+    }
+    const total=items.reduce((sum,x)=>sum+x.price_yer*x.quantity,0);
+    if(!Number.isFinite(total)||total<=0) return res.status(400).json({message:'إجمالي الطلب غير صالح.'});
+    const referralCode=String(req.body.referral_code||'').trim().toUpperCase()||null;
+    let referralUserId=null;
+    if(referralCode){
+      try { const rr=await query(`SELECT id FROM users WHERE referral_code=$1 LIMIT 1`,[referralCode]); if(rr.rowCount) referralUserId=rr.rows[0].id; } catch (_) {}
+    }
+    let userId=null;
+    const authToken=req.cookies?.auth_token;
+    if(authToken){try{const jwt=(await import('jsonwebtoken')).default;const payload=jwt.verify(authToken,process.env.JWT_SECRET);userId=payload.sub||null;}catch{}}
 
+    // Some older PostgreSQL deployments may not permit ALTER TABLE during a request.
+    // Detect the actual columns and insert with only columns that exist, while the startup migration
+    // continues to add the referral fields whenever the database user has permission.
+    const cols = await query(`SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='orders'`);
+    const hasReferralCode = cols.rows.some(r=>r.column_name==='referral_code');
+    const hasReferralUser = cols.rows.some(r=>r.column_name==='referral_user_id');
+    const baseValues=[userId,'pending',String(req.body.name||'').trim().slice(0,150),String(req.body.phone||'').trim().slice(0,50),String(req.body.city||'').trim().slice(0,100),String(req.body.address||'').trim(),String(req.body.notes||'').trim(),'YER',total];
+    let o;
+    if(hasReferralCode && hasReferralUser){
+      o=await query(`INSERT INTO orders(user_id,status,customer_name,phone,city,address,notes,currency,total_yer,referral_code,referral_user_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING id,status,total_yer,created_at`,[...baseValues,referralCode,referralUserId]);
+    } else if(hasReferralCode){
+      o=await query(`INSERT INTO orders(user_id,status,customer_name,phone,city,address,notes,currency,total_yer,referral_code) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id,status,total_yer,created_at`,[...baseValues,referralCode]);
+    } else {
+      o=await query(`INSERT INTO orders(user_id,status,customer_name,phone,city,address,notes,currency,total_yer) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id,status,total_yer,created_at`,baseValues);
+    }
+    if(!o.rows[0]?.id) throw new Error('تعذر إنشاء الطلب.');
+    for(const x of items) await query(`INSERT INTO order_items(order_id,product_id,name,image_url,price_yer,quantity,size,color,fabric) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[o.rows[0].id,x.product_id,x.name,x.image_url,x.price_yer,x.quantity,x.size,x.color,x.fabric]);
+    res.status(201).json({order:o.rows[0],message:'تم حفظ الطلب بنجاح.'});
+  }catch(e){next(e)}
+});
 
 app.get("/api/admin/products", authenticate, requireAdmin, async (_req, res, next) => { try { const r = await query(`SELECT * FROM products ORDER BY sort_order ASC,created_at DESC`); res.json({ products: r.rows }); } catch (e) { next(e); } });
 app.get("/api/admin/categories", authenticate, requireAdmin, async (_req, res, next) => { try { const r = await query(`SELECT * FROM categories ORDER BY sort_order ASC,name ASC`); res.json({ categories: r.rows }); } catch (e) { next(e); } });

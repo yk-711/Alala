@@ -9,11 +9,14 @@ CREATE TABLE IF NOT EXISTS users (
   provider_id VARCHAR(255),
   email_verified BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  referral_code VARCHAR(32),
+  points INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS users_email_idx ON users (LOWER(email));
 CREATE INDEX IF NOT EXISTS users_provider_idx ON users (provider, provider_id);
+CREATE UNIQUE INDEX IF NOT EXISTS users_referral_code_idx ON users(referral_code) WHERE referral_code IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
