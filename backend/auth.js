@@ -117,7 +117,7 @@ export async function login(req, res) {
   return res.json({
     message: "تم تسجيل الدخول بنجاح.",
     user: publicUser(user),
-    redirect: "/account.html"
+    redirect: isAdminUser(user) ? "/admin.html" : "/account.html"
   });
 }
 
@@ -289,8 +289,17 @@ function frontendUrl(req) {
   return `${req.protocol}://${req.get("host")}`;
 }
 
+function isAdminUser(user) {
+  const adminEmail = normalizeEmail(process.env.ADMIN_EMAIL);
+  return Boolean(adminEmail && normalizeEmail(user?.email) === adminEmail);
+}
+
 function accountRedirectUrl(req) {
   return `${frontendUrl(req)}/account.html`;
+}
+
+function adminRedirectUrl(req) {
+  return `${frontendUrl(req)}/admin.html`;
 }
 
 function loginRedirectUrl(req, error) {
@@ -389,7 +398,7 @@ export async function googleCallback(req, res) {
     // Create the session before redirecting so /account.html can immediately
     // verify the authenticated user.
     sessionCookie(res, user, true);
-    return res.redirect(accountRedirectUrl(req));
+    return res.redirect(isAdminUser(user) ? adminRedirectUrl(req) : accountRedirectUrl(req));
   } catch (error) {
     console.error("Google OAuth error:", error);
     return res.redirect(loginRedirectUrl(req, "google_failed"));
