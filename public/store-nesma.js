@@ -22,15 +22,31 @@
   cartFab?.addEventListener('click', () => { location.href = 'cart.html'; });
 
   const isHomePage = /(?:^|\/)index\.html?$/.test(location.pathname) || location.pathname.endsWith('/');
-  const currencyRates = isHomePage ? { sar: 1, yer: 65, usd: 0.2667 } : { yer: 1, sar: 1/140, usd: 1/532 };
-  const currencyLabels = { sar: 'ر.س', yer: 'ر.ي', usd: '$' };
-  let activeCurrency = localStorage.getItem('nesma-currency') || (isHomePage ? 'sar' : 'yer');
+  // جميع الأسعار في المتجر مخزنة بالريال اليمني، والتحويل يتم مباشرة من YER.
+  const currencyRates = { yer: 1, sar: 1/140, usd: 1/532 };
+  const currencyLabels = { yer: 'ر.ي', sar: 'ر.س', usd: '$' };
+  const currencyCodes = { yer: 'YER', sar: 'SAR', usd: 'USD' };
+  let activeCurrency = localStorage.getItem('nesma-currency') || 'yer';
   const numberPrice = value => { const m=String(value??'').replace(/,/g,'').match(/[0-9]+(?:\.[0-9]+)?/); return m?Number(m[0]):0; };
   const priceText = basePrice => { const v=numberPrice(basePrice)*currencyRates[activeCurrency]; return `${activeCurrency==='yer'?Math.round(v).toLocaleString('en-US'):v.toFixed(2)} ${currencyLabels[activeCurrency]}`; };
   function refreshPrices(){ document.querySelectorAll('.mcard').forEach(card=>{ const p=card.querySelector('.mprice'); if(p)p.textContent=priceText(card.dataset.price); const o=card.querySelector('.mold'); if(o&&card.dataset.old)o.textContent=priceText(card.dataset.old); }); }
-  function syncCurrency(){ if(currencySelect)currencySelect.value=activeCurrency; if(currencyShort)currencyShort.textContent=currencyLabels[activeCurrency]; if(isHomePage)refreshPrices(); }
-  currencySelect?.addEventListener('change',e=>{activeCurrency=e.target.value;localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
-  currencyToggle?.addEventListener('click',()=>{const order=isHomePage?['sar','yer','usd']:['yer','sar','usd'];activeCurrency=order[(order.indexOf(activeCurrency)+1)%order.length];localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
+  function syncCurrency(){
+    if(currencySelect) currencySelect.value=activeCurrency;
+    if(currencyShort) currencyShort.textContent=currencyCodes[activeCurrency];
+    refreshPrices();
+    window.NesmaShop?.setCurrency?.(activeCurrency.toUpperCase());
+    document.dispatchEvent(new CustomEvent('nesma:currency',{detail:activeCurrency.toUpperCase()}));
+  }
+  currencySelect?.addEventListener('change',e=>{
+    const next=String(e.target.value||'yer').toLowerCase();
+    if(!currencyRates[next]) return;
+    activeCurrency=next; localStorage.setItem('nesma-currency',activeCurrency); syncCurrency();
+  });
+  currencyToggle?.addEventListener('click',()=>{
+    const order=['yer','sar','usd'];
+    activeCurrency=order[(order.indexOf(activeCurrency)+1)%order.length];
+    localStorage.setItem('nesma-currency',activeCurrency); syncCurrency();
+  });
   syncCurrency();
 
   function setMobileNav(open){ if(!navMenu||!navToggle||!navBackdrop)return; const next=window.innerWidth<992&&open; navMenu.classList.toggle('show',next);navMenu.classList.toggle('mobile-open',next);navBackdrop.classList.toggle('show',next);navBackdrop.setAttribute('aria-hidden',String(!next));navToggle.setAttribute('aria-expanded',String(next));document.body.classList.toggle('nav-locked',next); }

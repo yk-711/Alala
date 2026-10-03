@@ -2205,8 +2205,8 @@ document.addEventListener(
     <span class="nav-icon"><i class="fas fa-house" aria-hidden="true"></i></span>
     <span class="nav-text">الرئيسية</span>
   </a>
-  <a href="categories.html" class="nav-item" id="bottomCategoriesButton">
-    <span class="nav-icon"><i class="fas fa-layer-group" aria-hidden="true"></i></span>
+  <a href="categories.html" class="nav-item">
+    <span class="nav-icon"><i class="fas fa-grid-2" aria-hidden="true"></i></span>
     <span class="nav-text">الأقسام</span>
   </a>
   <a href="cart.html" class="nav-item" id="bottomCartButton">
@@ -2217,8 +2217,8 @@ document.addEventListener(
     <span class="nav-icon"><i class="fas fa-heart" aria-hidden="true"></i></span>
     <span class="nav-text">المفضلة</span>
   </a>
-  <a href="products-page.html" class="nav-item" id="bottomNewButton">
-    <span class="nav-icon new-icon"><i class="fas fa-star" aria-hidden="true"></i></span>
+  <a href="products-page.html" class="nav-item">
+    <span class="nav-icon new-icon"><i class="fas fa-sparkles" aria-hidden="true"></i></span>
     <span class="nav-text">جديدنا</span>
   </a>
 </nav>
@@ -2672,12 +2672,4 @@ body { padding-bottom:calc(var(--nav-height) + 25px); }
 
 
 </section>
-<script>
-(function(){
-  var categoriesBtn=document.getElementById('bottomCategoriesButton');
-  var newBtn=document.getElementById('bottomNewButton');
-  categoriesBtn && categoriesBtn.addEventListener('click',function(e){ e.preventDefault(); window.location.assign('categories.html'); });
-  newBtn && newBtn.addEventListener('click',function(e){ e.preventDefault(); window.location.assign('products-page.html'); });
-})();
-</script>
 </body></html>
