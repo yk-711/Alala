@@ -68,7 +68,12 @@ loginForm.addEventListener("submit", async event => {
 
     // عدّل المسار حسب موقع الصفحة الرئيسية في مشروعك.
     if (data.user) {
-      window.location.href = 'account.html';
+      const params = new URLSearchParams(window.location.search);
+      const requested = params.get('returnTo');
+      const safeTarget = requested === 'admin.html' && data.redirect === '/admin.html'
+        ? 'admin.html'
+        : (data.redirect === '/admin.html' ? 'admin.html' : 'account.html');
+      window.location.href = safeTarget;
     }
   } catch (error) {
     showMessage("loginMessage", error.message, "error");
