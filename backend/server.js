@@ -219,6 +219,7 @@ async function ensureOrderSchema() {
       await query(`UPDATE order_items SET title=COALESCE(NULLIF(title,''),NULLIF(name,''),'منتج') WHERE title IS NULL OR title=''`);
       await query(`UPDATE order_items SET name=COALESCE(NULLIF(name,''),NULLIF(title,''),'منتج') WHERE name IS NULL OR name=''`);
       await query(`ALTER TABLE order_items ALTER COLUMN title SET DEFAULT 'منتج'`);
+      await query(`ALTER TABLE order_items ALTER COLUMN name SET DEFAULT 'منتج'`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS price_yer NUMERIC(12,2) NOT NULL DEFAULT 0`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS quantity INTEGER NOT NULL DEFAULT 1`);
       await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS size VARCHAR(100) NOT NULL DEFAULT ''`);
@@ -279,7 +280,17 @@ app.post("/api/orders", async (req,res,next)=>{
     if(!o.rows[0]?.id) throw new Error('تعذر إنشاء الطلب.');
     for(const x of items) {
       const itemName = String(x.name || x.title || 'منتج').trim() || 'منتج';
-      await query(`INSERT INTO order_items(order_id,product_id,title,name,image_url,price_yer,quantity,size,color,fabric) VALUES($1,$2,$3,$3,$4,$5,$6,$7,$8,$9,$10)`,[o.rows[0].id,x.product_id,itemName,x.image_url,x.price_yer,x.quantity,x.size,x.color,x.fabric]);
+      const itemImage = String(x.image_url || '').trim();
+      const itemPrice = Number(x.price_yer || x.price || 0) || 0;
+      const itemQty = Math.max(1, Number.parseInt(x.quantity, 10) || 1);
+      const itemSize = String(x.size || '').trim();
+      const itemColor = String(x.color || '').trim();
+      const itemFabric = String(x.fabric || '').trim();
+      await query(
+        `INSERT INTO order_items(order_id,product_id,title,name,image_url,price_yer,quantity,size,color,fabric)
+         VALUES($1,$2,$3,$3,$4,$5,$6,$7,$8,$9,$10)`,
+        [o.rows[0].id,x.product_id || null,itemName,itemImage,itemPrice,itemQty,itemSize,itemColor,itemFabric]
+      );
     }
     res.status(201).json({order:o.rows[0],message:'تم حفظ الطلب بنجاح.'});
   }catch(e){next(e)}
@@ -368,6 +379,17 @@ async function ensureProductTable(){
   await query(`CREATE TABLE IF NOT EXISTS points_ledger(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,points INTEGER NOT NULL,reason VARCHAR(100) NOT NULL,order_id UUID REFERENCES orders(id) ON DELETE SET NULL,referral_user_id UUID REFERENCES users(id) ON DELETE SET NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
   await query(`CREATE UNIQUE INDEX IF NOT EXISTS points_ledger_order_reason_idx ON points_ledger(user_id,order_id,reason) WHERE order_id IS NOT NULL`);
   await query(`CREATE TABLE IF NOT EXISTS notifications(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),title VARCHAR(200) NOT NULL,message TEXT NOT NULL DEFAULT '',type VARCHAR(30) NOT NULL DEFAULT 'info',active BOOLEAN NOT NULL DEFAULT TRUE,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
+  // Upgrade notification tables created by older versions. CREATE TABLE IF NOT EXISTS
+  // does not add missing columns to an existing table.
+  await query(`ALTER TABLE notifications ADD COLUMN IF NOT EXISTS title VARCHAR(200)`);
+  await query(`ALTER TABLE notifications ADD COLUMN IF NOT EXISTS message TEXT NOT NULL DEFAULT ''`);
+  await query(`ALTER TABLE notifications ADD COLUMN IF NOT EXISTS type VARCHAR(30) NOT NULL DEFAULT 'info'`);
+  await query(`ALTER TABLE notifications ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE`);
+  await query(`ALTER TABLE notifications ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`);
+  await query(`ALTER TABLE notifications ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`);
+  await query(`UPDATE notifications SET title=COALESCE(NULLIF(title,''),'إشعار') WHERE title IS NULL OR title=''`);
+  await query(`UPDATE notifications SET message=COALESCE(message,'') WHERE message IS NULL`);
+  await query(`UPDATE notifications SET type=COALESCE(NULLIF(type,''),'info') WHERE type IS NULL OR type=''`);
   await query(`UPDATE users SET referral_code='NESMA-'||UPPER(SUBSTRING(REPLACE(id::text,'-',''),1,6)) WHERE referral_code IS NULL`);
 }
 
