@@ -117,6 +117,7 @@ export async function login(req, res) {
   return res.json({
     message: "تم تسجيل الدخول بنجاح.",
     user: publicUser(user),
+    token: createSessionToken(user, remember),
     redirect: isAdminUser(user) ? "/admin.html" : "/account.html"
   });
 }
@@ -241,7 +242,9 @@ export async function resetPassword(req, res) {
 
 export function authenticate(req, res, next) {
   try {
-    const token = req.cookies.auth_token;
+    const authorization = String(req.headers.authorization || "");
+    const bearer = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
+    const token = bearer || req.cookies.auth_token;
     if (!token) return res.status(401).json({ message: "غير مسجل الدخول." });
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
@@ -267,13 +270,17 @@ function googleClient() {
   return new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL);
 }
 
-function sessionCookie(res, user, remember = true) {
+function createSessionToken(user, remember = true) {
   const expiresIn = remember ? "30d" : (process.env.JWT_EXPIRES_IN || "7d");
-  const token = jwt.sign(
+  return jwt.sign(
     { sub: user.id, type: "session" },
     process.env.JWT_SECRET,
     { expiresIn }
   );
+}
+
+function sessionCookie(res, user, remember = true) {
+  const token = createSessionToken(user, remember);
   res.cookie("auth_token", token, {
     httpOnly: true,
     secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
@@ -291,8 +298,9 @@ function frontendUrl(req) {
 }
 
 function isAdminUser(user) {
-  const adminEmail = normalizeEmail(process.env.ADMIN_EMAIL);
-  return Boolean(adminEmail && normalizeEmail(user?.email) === adminEmail);
+  const configured = normalizeEmail(process.env.ADMIN_EMAIL);
+  const adminEmail = configured || "younesalkiser@gmail.com";
+  return normalizeEmail(user?.email) === adminEmail;
 }
 
 function accountRedirectUrl(req) {
@@ -313,8 +321,17 @@ export function googleStart(req, res) {
     return res.status(503).send("تسجيل الدخول عبر Google غير مفعّل بعد.");
   }
 
+  const requestedReturnTo = String(req.query.returnTo || "account.html").trim();
+  const returnTo = requestedReturnTo === "admin.html" ? "admin.html" : "account.html";
   const state = randomBytes(32).toString("hex");
   res.cookie("google_oauth_state", state, {
+    httpOnly: true,
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
+    maxAge: 10 * 60 * 1000,
+    path: "/"
+  });
+  res.cookie("google_return_to", returnTo, {
     httpOnly: true,
     secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
     sameSite: process.env.COOKIE_SAMESITE || "none",
@@ -334,9 +351,17 @@ export function googleStart(req, res) {
 export async function googleCallback(req, res) {
   const client = googleClient();
   const stateCookie = req.cookies.google_oauth_state;
+  const returnTo = req.cookies.google_return_to === "admin.html" ? "admin.html" : "account.html";
   const { code, state, error } = req.query;
 
   res.clearCookie("google_oauth_state", {
+    httpOnly: true,
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
+    sameSite: process.env.COOKIE_SAMESITE || "none",
+    path: "/"
+  });
+
+  res.clearCookie("google_return_to", {
     httpOnly: true,
     secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
     sameSite: process.env.COOKIE_SAMESITE || "none",
@@ -396,10 +421,12 @@ export async function googleCallback(req, res) {
       user = created.rows[0];
     }
 
-    // Create the session before redirecting so /account.html can immediately
-    // verify the authenticated user.
-    sessionCookie(res, user, true);
-    return res.redirect(isAdminUser(user) ? adminRedirectUrl(req) : accountRedirectUrl(req));
+    // The frontend and API are on different domains. Return the JWT in the URL
+    // fragment so JavaScript can store it without sending it in an HTTP request.
+    // The fragment is not sent to the server or normal referrer headers.
+    const target = isAdminUser(user) && returnTo === "admin.html" ? "admin.html" : "account.html";
+    const token = createSessionToken(user, true);
+    return res.redirect(`${frontendUrl(req)}/login.html#google_token=${encodeURIComponent(token)}&redirect=${encodeURIComponent(target)}`);
   } catch (error) {
     console.error("Google OAuth error:", error);
     return res.redirect(loginRedirectUrl(req, "google_failed"));
