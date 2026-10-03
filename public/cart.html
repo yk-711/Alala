@@ -1,12 +1,155 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>السلة | نسمة</title><link rel="stylesheet" href="shop.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><style>
-.cart-page-hero{padding:36px 0 18px}.cart-page-hero h1{font-size:clamp(2rem,5vw,3.4rem);margin:8px 0}.cart-page-hero p{color:#897a70}.cart-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;padding:18px 0 80px}.cart-list{display:grid;gap:14px}.cart-row{display:grid;grid-template-columns:90px 1fr auto;gap:18px;align-items:center;background:#fff;border:1px solid #eadfca;border-radius:24px;padding:14px;box-shadow:0 12px 35px rgba(52,24,10,.07)}.cart-row>img{width:90px;height:110px;object-fit:cover;border-radius:18px}.cart-row-main h3{margin:0 0 8px}.cart-options{display:flex;gap:8px;flex-wrap:wrap;color:#8a796e;font-size:.78rem;margin-bottom:10px}.cart-options span{background:#f8f1e8;padding:5px 8px;border-radius:999px}.qty{display:flex;align-items:center;gap:8px;margin-top:10px}.qty button{border:1px solid #e5d9cc;background:#fff;border-radius:9px;min-width:34px;height:32px}.qty .remove{border:0;color:#9b3a2c;background:transparent;width:auto}.cart-summary{background:linear-gradient(150deg,#16120d,#080807);color:#fff;border:1px solid rgba(217,180,92,.4);border-radius:28px;padding:24px;height:max-content;position:sticky;top:20px}.cart-summary h2{margin-top:0}.summary-line{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}.summary-total{display:flex;justify-content:space-between;font-size:1.25rem;padding:18px 0}.checkout{display:block;width:100%;text-align:center;border:0;border-radius:14px;background:#d9b45c;color:#100e09;padding:13px;font-weight:800;text-decoration:none;cursor:pointer}.cart-empty-card{text-align:center;background:#fff;border:1px dashed #d9c8b7;border-radius:28px;padding:55px 25px}.cart-empty-card i{font-size:40px;color:#d9b45c}.cart-empty-card p{color:#897a70}.shop-currency{display:flex;align-items:center;gap:6px;font-size:.78rem}.shop-currency select{border:1px solid #e5d9cc;border-radius:8px;padding:5px;background:#fff}@media(max-width:800px){.cart-layout{grid-template-columns:1fr}.cart-summary{position:static}.cart-row{grid-template-columns:70px 1fr}.cart-line-total{grid-column:2;text-align:left}.cart-row>img{width:70px;height:90px}}
-</style></head><body class="shop-page">
-<nav class="shop-nav"><div class="shop-wrap shop-nav-inner"><a href="./">الرئيسية</a><a href="products-page.html">العبايات</a><a href="categories.html">الأقسام</a><a href="wishlist.html">الأمنيات</a><a class="active" href="cart.html">السلة</a><label class="shop-currency">العملة <select id="shopCurrency"><option value="yer">ر.ي</option><option value="sar">ر.س</option><option value="usd">$</option></select></label></div></nav>
-<header class="shop-wrap cart-page-hero"><span class="shop-kicker">NESMA BAG</span><h1>سلة اختياراتك</h1><p><span id="cartCountPage">0</span> قطعة محفوظة في سلتك</p></header>
-<main class="shop-wrap"><div class="cart-layout"><section class="cart-list" id="cartList"></section><aside class="cart-summary"><h2>ملخص الطلب</h2><div class="summary-line"><span>المنتجات</span><span id="summaryCount">—</span></div><div class="summary-total"><span>الإجمالي</span><strong id="cartTotal">0 ر.ي</strong></div><a class="checkout" href="checkout.html">إتمام الطلب</a></aside></div></main>
-<script src="shared.js"></script><script src="cart.js"></script><script src="notifications.js"></script><nav class="bottom-navigation" dir="rtl" aria-label="القائمة الرئيسية" style="position:fixed;z-index:9999;right:12px;left:12px;bottom:8px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:4px 6px;background:linear-gradient(135deg,#211b0e,#100e09,#211b0e);border:1px solid rgba(212,175,55,.45);border-radius:22px;box-shadow:0 6px 20px rgba(0,0,0,.28);font-family:Tahoma,Arial,sans-serif">
-<a href="./" style="flex:1;text-align:center;color:#b99a43;text-decoration:none"><i class="fas fa-house"></i><small style="display:block">الرئيسية</small></a>
-<a href="categories.html" style="flex:1;text-align:center;color:#b99a43;text-decoration:none"><i class="fas fa-layer-group"></i><small style="display:block">الأقسام</small></a>
-<a href="cart.html" style="flex:1;text-align:center;color:#d9b45c;text-decoration:none"><i class="fas fa-bag-shopping"></i><small style="display:block">السلة</small></a>
-<a href="wishlist.html" style="flex:1;text-align:center;color:#b99a43;text-decoration:none"><i class="fas fa-heart"></i><small style="display:block">المفضلة</small></a>
-<a href="products-page.html" style="flex:1;text-align:center;color:#b99a43;text-decoration:none"><i class="fas fa-wand-magic-sparkles"></i><small style="display:block">وصل حديثاً</small></a></nav></body></html>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>السلة | نسمة</title><link rel="stylesheet" href="shop.css"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><link rel="stylesheet" href="store-nesma.css"><script src="https://unpkg.com/lucide@latest"></script><style id="nesma-modern-nav-style">
+:root { --gold: #d4af37; --gold-light: #f3d77a; --gold-dark: #9b720c; --nav-height: 62px; }
+.nesma-modern-navbar {
+  width:100%; min-height:82px; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; direction:ltr;
+  background:linear-gradient(135deg,#9b720c 0%,#d4af37 48%,#f3d477 100%);
+  border-bottom-left-radius:38px; border-bottom-right-radius:38px; box-shadow:0 4px 12px rgba(99,70,0,.18); position:relative; z-index:1000;
+}
+.nesma-modern-navbar .nav-left,.nesma-modern-navbar .nav-right { display:flex; align-items:center; }
+.nesma-modern-navbar .nav-left { gap:16px; }
+.nesma-modern-navbar .nav-left button,.nesma-modern-navbar .modern-menu-button { border:0; padding:0; background:transparent; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.nesma-modern-navbar .nav-cart-button { position:relative; width:28px; height:34px; font-size:22px; }
+.nesma-modern-navbar .nav-cart-button #cartCount { position:absolute; top:-5px; right:-8px; min-width:17px; height:17px; padding:0 4px; display:grid; place-items:center; border-radius:50%; background:#17130b; color:#fff; font:700 10px/1 Arial,sans-serif; }
+.nesma-modern-navbar .header-search-button { width:30px; height:34px; font-size:21px; }
+.nesma-modern-navbar .currency-toggle { display:flex; align-items:center; gap:3px; color:#fff; font:700 17px Arial,sans-serif; cursor:pointer; }
+.nesma-modern-navbar .currency-icon { font-size:21px; line-height:1; }
+.nesma-modern-navbar #currencyShort { font-size:17px; white-space:nowrap; }
+.nesma-modern-navbar .currency-hidden { display:none; }
+.nesma-modern-navbar .nav-right { gap:9px; direction:ltr; }
+.nesma-modern-navbar .modern-logo { display:flex; align-items:center; color:#fff; white-space:nowrap; text-decoration:none; }
+.nesma-modern-navbar .logo-text { font-family:'Dancing Script',cursive; font-size:48px; font-weight:700; line-height:.9; }
+.nesma-modern-navbar .logo-pin { width:48px; height:auto; margin:12px 0 0 -4px; overflow:visible; }
+.nesma-modern-navbar .modern-menu-button { margin-left:2px; font-size:22px; width:30px; height:48px; }
+.nesma-modern-navbar .modern-nav-collapse { width:100%; }
+.nesma-modern-navbar .modern-nav-collapse .nav-link { color:#fff; }
+.bottom-navigation { direction:rtl; position:fixed; z-index:9999; right:12px; left:12px; bottom:8px; height:var(--nav-height); display:flex; align-items:center; justify-content:space-between; gap:2px; padding:4px 6px; background:linear-gradient(135deg,#211b0e 0%,#100e09 50%,#211b0e 100%); border:1px solid rgba(212,175,55,.45); border-radius:22px; box-shadow:0 6px 20px rgba(0,0,0,.28),0 0 12px rgba(212,175,55,.12); font-family:Tahoma,Arial,sans-serif; }
+.bottom-navigation .nav-item { position:relative; flex:1; height:54px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-width:0; padding:2px; color:#b99a43; text-decoration:none; border-radius:18px; transition:color .2s ease,background .2s ease,transform .2s ease; }
+.bottom-navigation .nav-item:hover { color:var(--gold-light); }
+.bottom-navigation .nav-item.active { color:#17130b; background:linear-gradient(145deg,#f3d77a,#d4af37 55%,#b58b20); box-shadow:0 3px 10px rgba(212,175,55,.25); }
+.bottom-navigation .nav-icon { width:27px; height:27px; display:grid; place-items:center; font-size:21px; }
+.bottom-navigation .nav-text { font-size:10px; font-weight:600; line-height:1; white-space:nowrap; }
+body { padding-bottom:calc(var(--nav-height) + 25px); }
+@media (max-width:768px) {
+  .nesma-modern-navbar { min-height:70px; padding:10px 12px; border-bottom-left-radius:30px; border-bottom-right-radius:30px; }
+  .nesma-modern-navbar .nav-left { gap:10px; }
+  .nesma-modern-navbar .nav-left svg { width:23px; height:23px; }
+  .nesma-modern-navbar .currency-toggle { font-size:14px; }
+  .nesma-modern-navbar .currency-icon { font-size:18px; }
+  .nesma-modern-navbar #currencyShort { font-size:14px; }
+  .nesma-modern-navbar .nav-right { gap:6px; }
+  .nesma-modern-navbar .logo-text { font-size:40px; }
+  .nesma-modern-navbar .logo-pin { width:39px; margin-left:-3px; margin-top:9px; }
+  .nesma-modern-navbar .modern-menu-button { height:40px; }
+  .nesma-modern-navbar .modern-nav-collapse { margin-top:10px; }
+}
+@media (max-width:360px) {
+  .nesma-modern-navbar { min-height:64px; padding:8px 10px; }
+  .nesma-modern-navbar .nav-left { gap:8px; }
+  .nesma-modern-navbar .currency-toggle { font-size:12px; }
+  .nesma-modern-navbar .currency-icon { font-size:16px; }
+  .nesma-modern-navbar #currencyShort { font-size:12px; }
+  .nesma-modern-navbar .logo-text { font-size:35px; }
+  .nesma-modern-navbar .logo-pin { width:34px; }
+  .bottom-navigation { right:8px; left:8px; bottom:6px; height:58px; padding:3px 4px; border-radius:20px; }
+  .bottom-navigation .nav-item { height:50px; }
+  .bottom-navigation .nav-icon { width:24px; height:24px; font-size:19px; }
+  .bottom-navigation .nav-text { font-size:9px; }
+}
+</style><style id="transparent-nav-controls">
+#navmenu, #navmenu.navbar-collapse, #currencyToggle, #currencySelect {
+  background: transparent !important;
+}
+#currencyToggle:hover, #currencyToggle:focus, #currencyToggle:focus-visible, #currencyToggle:active {
+  background: transparent !important;
+}
+#currencyToggle {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+</style></head><body class="shop-page"><nav class="navbar nesma-modern-navbar" id="nav" aria-label="القائمة الرئيسية">
+  <div class="nav-left">
+    <button class="nav-cart-button" id="cartFab" type="button" title="السلة" aria-label="فتح السلة">
+      <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+      <span id="cartCount">0</span>
+    </button>
+
+    <button id="navSearchBtn" class="header-search-button" type="button" title="فتح البحث" aria-label="فتح البحث">
+      <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+
+    <button id="currencyToggle" class="currency-toggle" type="button" aria-label="تغيير العملة">
+      <span class="currency-icon">$</span>
+      <span id="currencyShort">SAR</span>
+    </button>
+    <select id="currencySelect" class="currency-hidden" aria-label="اختيار العملة">
+      <option value="sar">ريال سعودي</option>
+      <option value="yer">ريال يمني</option>
+      <option value="usd">دولار أمريكي</option>
+    </select>
+  </div>
+
+  <div class="nav-right">
+    <a class="modern-logo" href="./" aria-label="متجر نسمة">
+      <span class="logo-text">Lhat</span>
+    </a>
+
+    <button class="navbar-toggler modern-menu-button" id="modernMenuButton" data-bs-target="#navmenu" type="button" aria-label="فتح القائمة" aria-expanded="false">
+      <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div class="collapse navbar-collapse modern-nav-collapse" id="navmenu">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item"><a class="nav-link active" href="./">الرئيسية</a></li>
+      <li class="nav-item"><a class="nav-link" href="products-page.html">المنتجات</a></li>
+      <li class="nav-item"><a class="nav-link" href="categories.html">الأقسام</a></li>
+    </ul>
+    <div class="d-flex align-items-center gap-1">
+      <a class="nav-link nav-cta" href="#" id="accountBtn">حسابي</a>
+      <a class="nav-link nav-cta" href="cart.html"><i class="fas fa-shopping-bag me-1"></i>السلة</a>
+      <a class="nav-link nav-cta" href="wishlist.html"><i class="fas fa-heart me-1"></i>الأمنيات</a>
+    </div>
+  </div>
+</nav><div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div><div id="searchOv">
+<button class="sovclose" id="searchClose"><i class="fas fa-times"></i></button>
+<div class="sovbox">
+<h4>ما الذي تبحثين عنه اليوم؟</h4>
+<div class="sovinput">
+<input autocomplete="off" id="searchInput" placeholder="ابحثي عن عباية أو فئة..." type="text"/>
+<button><i class="fas fa-search"></i></button>
+</div>
+
+<div id="searchStatus" class="search-status">اكتبي اسم المنتج أو الفئة للبحث السريع</div><div class="sovcats">
+<div class="sovcat active" data-cat="all">
+<img alt="" src="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900"/>كل المنتجات
+               </div>
+<div class="sovcat" data-cat="burgers">
+<img alt="" src="https://images.pexels.com/photos/13791262/pexels-photo-13791262.jpeg?auto=compress&cs=tinysrgb&w=900"/>للسيدات
+               </div>
+<div class="sovcat" data-cat="pizza">
+<img alt="" src="https://images.pexels.com/photos/13791266/pexels-photo-13791266.jpeg?auto=compress&cs=tinysrgb&w=900"/>للأطفال
+               </div>
+<div class="sovcat" data-cat="chicken">
+<img alt="" src="https://images.pexels.com/photos/13862203/pexels-photo-13862203.jpeg?auto=compress&cs=tinysrgb&w=900"/>فساتين
+               </div>
+<div class="sovcat" data-cat="wraps">
+<img alt="" src="https://images.pexels.com/photos/13838837/pexels-photo-13838837.jpeg?auto=compress&cs=tinysrgb&w=900"/>أطقم
+               </div>
+<div class="sovcat" data-cat="pasta">
+<img alt="" src="https://images.pexels.com/photos/33537065/pexels-photo-33537065.jpeg?auto=compress&cs=tinysrgb&w=900"/>إكسسوارات
+               </div>
+<div class="sovcat" data-cat="desserts">
+<img alt="" src="https://images.pexels.com/photos/37558001/pexels-photo-37558001.jpeg?auto=compress&cs=tinysrgb&w=900"/>عروض خاصة
+               </div>
+</div>
+<div class="sovtrend">
+<p><i class="fas fa-fire me-1" style="color:var(--secondary);"></i>عمليات البحث الرائجة</p>
+<span class="ttag">عباية يومية</span>
+<span class="ttag">Nashville فساتين</span>
+<span class="ttag">Truffle للأطفال</span>
+<span class="ttag">إكسسارات شعر</span>
+<span class="ttag">عروض نسمة</span>
+<span class="ttag">هدايا الصغار</span>
+</div>
+</div>
+</div><header class="shop-head shop-wrap"><span class="shop-kicker">YOUR BAG</span><h1>سلة المشتريات</h1><p><span id="cartCountPage">0</span> قطعة في السلة</p></header><main class="shop-wrap"><div class="cart-layout"><section class="cart-list" id="cartList"></section><aside class="cart-summary"><div class="summary-total"><span>الإجمالي</span><strong id="cartTotal">0.00 ر.س</strong></div><button class="checkout" onclick="location.href='checkout.html'">إتمام الطلب عبر واتساب</button></aside></div></main><script src="shop.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="store-nesma.js"></script></body></html>

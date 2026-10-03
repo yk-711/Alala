@@ -1,85 +1,53 @@
-
 (() => {
-  const $=id=>document.getElementById(id);
-  const esc=window.Nesma.escapeHtml;
-  let selectedProduct=null, selectedImageIndex=0, quantity=1;
+  const API = 'https://nesma-store.onrender.com';
+  const accountBtn = document.getElementById('accountBtn');
+  const currencySelect = document.getElementById('currencySelect');
+  const currencyToggle = document.getElementById('currencyToggle');
+  const currencyShort = document.getElementById('currencyShort');
+  const cartFab = document.getElementById('cartFab');
+  const navToggle = document.querySelector('.navbar-toggler');
+  const navMenu = document.getElementById('navmenu');
+  const navBackdrop = document.getElementById('navBackdrop');
+  const search = document.getElementById('navSearchBtn');
+  const overlay = document.getElementById('searchOv');
+  const closeSearch = document.getElementById('searchClose');
 
-  const currencySelect=$("currencySelect"),currencyToggle=$("currencyToggle"),currencyShort=$("currencyShort");
-  function refreshCurrency(){
-    const c=window.Nesma.getCurrency();
-    if(currencySelect)currencySelect.value=c;
-    if(currencyShort)currencyShort.textContent=window.Nesma.CURRENCY_LABELS[c];
-    document.querySelectorAll("[data-price-yer]").forEach(el=>el.textContent=window.Nesma.formatPrice(el.dataset.priceYer,c)); if(selectedProduct&&$("mpPrice"))$("mpPrice").textContent=window.Nesma.formatPrice(selectedProduct.price_yer,c);
-  }
-  currencySelect?.addEventListener("change",e=>{window.Nesma.setCurrency(e.target.value);refreshCurrency();});
-  currencyToggle?.addEventListener("click",()=>{window.Nesma.nextCurrency();refreshCurrency();});
-  window.addEventListener("nesma-products-rendered",refreshCurrency);
-  refreshCurrency();
-
-  function ensureOptions(){
-    const body=document.querySelector("#menuPop .mpbody"); if(!body)return;
-    let el=$("mpOptions");
-    if(!el){el=document.createElement("div");el.id="mpOptions";el.className="mp-options";body.insertBefore(el,$("mpStars"));}
-    return el;
-  }
-  function optionGroup(label,key,values){
-    if(!values?.length)return "";
-    return `<div class="mp-option-group"><span>${label}</span><div class="mp-option-list">${values.map((v,i)=>`<button type="button" class="mp-option ${i===0?"selected":""}" data-option="${key}" data-value="${esc(v)}">${esc(v)}</button>`).join("")}</div></div>`;
-  }
-  function openProduct(product){
-    if(!product)return;
-    selectedProduct=product;selectedImageIndex=0;quantity=1;
-    const images=window.Nesma.productImages(product);
-    $("mpImg").src=images[0]||"";$("mpTitle").textContent=product.title;
-    $("mpCat").textContent=(product.category_slugs||[product.category])[0]||"عبايات";
-    $("mpDesc").textContent=product.description||"";
-    $("mpPrice").textContent=window.Nesma.formatPrice(product.price_yer);
-    $("mpStars").innerHTML=`<i class="fas fa-star"></i> ${Number(product.rating||5).toFixed(1)} <span>(${Number(product.reviews||0)})</span>`;
-    $("mpTags").innerHTML=(product.badges||[]).map(x=>`<span>${esc(x)}</span>`).join("");
-    $("mpQnum").textContent="1";$("mpQty").value="1";
-    const gallery=$("mpGallery");gallery.innerHTML=images.map((src,i)=>`<button type="button" class="mpthumb ${i===0?"active":""}" data-index="${i}"><img src="${esc(src)}" alt=""></button>`).join("");
-    gallery.querySelectorAll("[data-index]").forEach(b=>b.onclick=()=>{selectedImageIndex=Number(b.dataset.index);$("mpImg").src=images[selectedImageIndex];gallery.querySelectorAll(".mpthumb").forEach(x=>x.classList.remove("active"));b.classList.add("active");});
-    const opt=ensureOptions();
-    opt.innerHTML=optionGroup("المقاس","size",product.sizes||[])+optionGroup("اللون","color",product.colors||[])+optionGroup("القماش","fabric",product.fabrics||[]);
-    opt.querySelectorAll(".mp-option").forEach(b=>b.onclick=()=>{opt.querySelectorAll(`[data-option="${b.dataset.option}"]`).forEach(x=>x.classList.remove("selected"));b.classList.add("selected");});
-    const sizeWrap=document.querySelector(".mpsizes");if(sizeWrap)sizeWrap.style.display="none";
-    $("menuPop").classList.add("open");
-    refreshCurrency();
-  }
-  function selectedOption(key){return document.querySelector(`#mpOptions [data-option="${key}"].selected`)?.dataset.value||"";}
-  function clamp(n){return Math.max(1,Math.min(99,Math.round(Number(n)||1)));}
-  $("mpQtyMinus")?.addEventListener("click",()=>{$("mpQty").value=clamp(Number($("mpQty").value)-1);$("mpQnum").textContent=$("mpQty").value;});
-  $("mpQtyPlus")?.addEventListener("click",()=>{$("mpQty").value=clamp(Number($("mpQty").value)+1);$("mpQnum").textContent=$("mpQty").value;});
-  $("mpQty")?.addEventListener("change",()=>{$("mpQty").value=clamp($("mpQty").value);$("mpQnum").textContent=$("mpQty").value;});
-  $("mpMinus")?.addEventListener("click",()=>{$("mpQty").value=clamp(Number($("mpQty").value)-1);$("mpQnum").textContent=$("mpQty").value;});
-  $("mpPlus")?.addEventListener("click",()=>{$("mpQty").value=clamp(Number($("mpQty").value)+1);$("mpQnum").textContent=$("mpQty").value;});
-  const cartFab=$("cartFab"); cartFab?.addEventListener("click",()=>location.href="cart.html");
-  function refreshCartCount(){const el=$("cartCount");if(el)el.textContent=window.Nesma.cartCount();} window.addEventListener("nesma-cart-updated",refreshCartCount); refreshCartCount();
-  $("mpAddCart")?.addEventListener("click",()=>{
-    if(!selectedProduct)return;
-    const images=window.Nesma.productImages(selectedProduct);
-    const size=selectedOption("size"),color=selectedOption("color"),fabric=selectedOption("fabric");
-    window.Nesma.addCart({id:selectedProduct.id,title:selectedProduct.title,price_yer:Number(selectedProduct.price_yer||0),image:images[0]||"",size,color,fabric,qty:clamp($("mpQty").value)});
-    $("menuPop").classList.remove("open");location.href="cart.html";
+  accountBtn?.addEventListener('click', async e => {
+    e.preventDefault();
+    try { const r = await fetch(`${API}/api/auth/me`, {credentials:'include'}); location.href = r.ok ? 'account.html' : 'login.html'; }
+    catch { location.href = 'login.html'; }
   });
-  $("mpClose")?.addEventListener("click",()=>$("menuPop").classList.remove("open"));
-  $("menuPop")?.addEventListener("click",e=>{if(e.target===$("menuPop"))$("menuPop").classList.remove("open");});
-  window.NesmaOpenProduct=openProduct;
+  cartFab?.addEventListener('click', () => { location.href = 'cart.html'; });
 
-  const navToggle=document.querySelector(".navbar-toggler"),navMenu=$("navmenu"),backdrop=$("navBackdrop");
-  function nav(open){if(!navMenu||!navToggle)return;const ok=window.innerWidth<992,next=ok&&open;navMenu.classList.toggle("show",next);navMenu.classList.toggle("mobile-open",next);backdrop?.classList.toggle("show",next);navToggle.setAttribute("aria-expanded",String(next));document.body.classList.toggle("nav-locked",next);}
-  navToggle?.addEventListener("click",e=>{e.preventDefault();nav(!navMenu.classList.contains("mobile-open"));});
-  backdrop?.addEventListener("click",()=>nav(false));
-  navMenu?.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>nav(false)));
-  window.addEventListener("resize",()=>{if(innerWidth>=992)nav(false);});
+  const currencyRates = { sar: 1, yer: 65, usd: 0.2667 };
+  const currencyLabels = { sar: 'ر.س', yer: 'ر.ي', usd: '$' };
+  let activeCurrency = localStorage.getItem('nesma-currency') || 'sar';
+  const numberPrice = value => { const m=String(value??'').replace(/,/g,'').match(/[0-9]+(?:\.[0-9]+)?/); return m?Number(m[0]):0; };
+  const priceText = sarPrice => { const v=numberPrice(sarPrice)*currencyRates[activeCurrency]; return `${activeCurrency==='yer'?Math.round(v).toLocaleString('en-US'):v.toFixed(2)} ${currencyLabels[activeCurrency]}`; };
+  function refreshPrices(){ document.querySelectorAll('.mcard').forEach(card=>{ const p=card.querySelector('.mprice'); if(p)p.textContent=priceText(card.dataset.price); const o=card.querySelector('.mold'); if(o&&card.dataset.old)o.textContent=priceText(card.dataset.old); }); }
+  function syncCurrency(){ if(currencySelect)currencySelect.value=activeCurrency; if(currencyShort)currencyShort.textContent=currencyLabels[activeCurrency]; refreshPrices(); }
+  currencySelect?.addEventListener('change',e=>{activeCurrency=e.target.value;localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
+  currencyToggle?.addEventListener('click',()=>{const order=['sar','yer','usd'];activeCurrency=order[(order.indexOf(activeCurrency)+1)%order.length];localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
+  syncCurrency();
 
-  const search=$("navSearchBtn"),overlay=$("searchOv"),close=$("searchClose"),input=$("searchInput");
-  search?.addEventListener("click",()=>overlay?.classList.add("open"));close?.addEventListener("click",()=>overlay?.classList.remove("open"));
-  input?.addEventListener("input",()=>{const q=input.value.trim().toLowerCase();document.querySelectorAll("#mgrid .mwrap").forEach(w=>{const c=w.querySelector(".mcard");const hay=`${c?.dataset.title||""} ${c?.dataset.tags||""} ${c?.dataset.cat||""}`.toLowerCase();w.style.display=!q||hay.includes(q)?"":"none";});});
+  function setMobileNav(open){ if(!navMenu||!navToggle||!navBackdrop)return; const next=window.innerWidth<992&&open; navMenu.classList.toggle('show',next);navMenu.classList.toggle('mobile-open',next);navBackdrop.classList.toggle('show',next);navBackdrop.setAttribute('aria-hidden',String(!next));navToggle.setAttribute('aria-expanded',String(next));document.body.classList.toggle('nav-locked',next); }
+  navToggle?.setAttribute('aria-expanded','false'); navToggle?.addEventListener('click',e=>{e.preventDefault();setMobileNav(!navMenu?.classList.contains('mobile-open'));}); navBackdrop?.addEventListener('click',()=>setMobileNav(false)); navMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMobileNav(false))); window.addEventListener('resize',()=>{if(window.innerWidth>=992)setMobileNav(false);});
+  search?.addEventListener('click',()=>{setMobileNav(false);overlay?.classList.add('open');}); closeSearch?.addEventListener('click',()=>overlay?.classList.remove('open'));
 
-  // The old drawer cart is intentionally gone. The bottom cart now opens the standalone cart page.
-  document.querySelector("#bottomCartButton")?.addEventListener("click",e=>{e.stopPropagation();});
-  document.addEventListener("click",e=>{
-    const link=e.target.closest('a[href="cart.html"]'); if(link) return;
-  });
+  // النقر على بطاقة المنتج يفتح صفحة التفاصيل الاحترافية، وليس نافذة منبثقة.
+  function bindProductCards(){ document.querySelectorAll('.mcard').forEach(card=>{
+    if(card.dataset.detailBound==='1')return; card.dataset.detailBound='1';
+    const go=()=>{ const id=card.dataset.id || card.getAttribute('data-id'); if(id) location.href=`product.html?id=${encodeURIComponent(id)}`; };
+    card.addEventListener('click',e=>{ if(e.target.closest('.fav-btn,button,a,input,select')) return; go(); });
+    card.querySelector('.madd')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();go();});
+  }); }
+  document.querySelectorAll('.mcard').forEach((card,i)=>{ if(!card.dataset.id){ const title=card.dataset.title||''; card.dataset.id=card.dataset.id||card.getAttribute('data-product-id')||''; } });
+  bindProductCards();
+
+  const filterButtons=[...document.querySelectorAll('.filter-btn')],sortSelect=document.getElementById('sortSelect'),mgrid=document.getElementById('mgrid'),searchInput=document.getElementById('searchInput'),searchStatus=document.getElementById('searchStatus');
+  let activeFilter='all',searchQuery='';
+  function applyCatalogView(){ if(!mgrid)return; const items=[...mgrid.querySelectorAll('.mwrap')].map(wrapper=>({wrapper,card:wrapper.querySelector('.mcard')})).filter(x=>x.card); items.forEach(({wrapper,card})=>{const hay=`${card.dataset.title||''} ${card.dataset.cat||''} ${card.dataset.tags||''}`.toLocaleLowerCase();wrapper.style.display=(activeFilter==='all'||card.dataset.audience===activeFilter)&&(!searchQuery||hay.includes(searchQuery))?'':'none';}); const visible=items.filter(x=>x.wrapper.style.display!=='none'); const sort=sortSelect?.value||'default'; if(sort!=='default')visible.sort((a,b)=>{const d=numberPrice(a.card.dataset.price)-numberPrice(b.card.dataset.price);return sort==='low'?d:-d;}); visible.concat(items.filter(x=>x.wrapper.style.display==='none')).forEach(x=>mgrid.appendChild(x.wrapper)); if(searchStatus){searchStatus.textContent=searchQuery?`${visible.length} منتج مطابق للبحث`:'اكتبي اسم المنتج أو الفئة للبحث السريع';searchStatus.classList.toggle('empty',visible.length===0);} bindProductCards(); }
+  filterButtons.forEach(b=>b.addEventListener('click',()=>{activeFilter=b.dataset.filter||'all';filterButtons.forEach(x=>x.classList.toggle('active',x===b));applyCatalogView();})); sortSelect?.addEventListener('change',applyCatalogView); searchInput?.addEventListener('input',()=>{searchQuery=searchInput.value.trim().toLocaleLowerCase();applyCatalogView();});
+  document.querySelectorAll('.mcard').forEach(card=>{card.style.position='relative';if((card.dataset.tags||'').includes('جديد')&&!card.querySelector('.new-badge'))card.insertAdjacentHTML('afterbegin','<span class="new-badge">جديد</span>');if(!card.querySelector('.fav-btn')){const fav=document.createElement('button');fav.className='fav-btn';fav.type='button';fav.setAttribute('aria-label','إضافة إلى المفضلة');const key=`fav-${card.dataset.id||card.dataset.title}`;fav.textContent=localStorage.getItem(key)==='1'?'♥':'♡';fav.addEventListener('click',e=>{e.stopPropagation();const next=localStorage.getItem(key)==='1'?'0':'1';localStorage.setItem(key,next);fav.textContent=next==='1'?'♥':'♡';});card.prepend(fav);}});
+  applyCatalogView();
 })();

@@ -1,6 +1,42 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>حسابي | متجر نسمة</title><link rel="stylesheet" href="login.css"><style>
-.account-page{min-height:100vh;background:linear-gradient(145deg,#070707,#17110a);color:#fff;padding:30px 16px}.account-wrap{width:min(950px,100%);margin:auto}.account-card{background:rgba(255,255,255,.045);border:1px solid rgba(217,180,92,.28);border-radius:30px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.35)}.account-head{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.account-head h1{margin:0}.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:22px}.account-stat{border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:18px;background:rgba(0,0,0,.18)}.account-stat span{display:block;color:#c5b9aa;font-size:.8rem}.account-stat strong{display:block;color:#f1d27a;font-size:1.5rem;margin-top:6px}.ref-box{margin-top:15px;padding:18px;border:1px solid rgba(217,180,92,.3);border-radius:20px;background:rgba(217,180,92,.06)}.ref-link{display:flex;gap:8px;margin-top:10px}.ref-link input{flex:1}.ref-link button{border:0;border-radius:10px;background:#d9b45c;color:#111;padding:0 14px}.account-orders{margin-top:24px}.account-order{display:flex;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08)}.account-order small{color:#b9aea1}.back-store{display:inline-block;margin-top:22px;color:#d9b45c;text-decoration:none}@media(max-width:700px){.account-grid{grid-template-columns:1fr}}
-</style></head><body class="account-page"><div class="account-wrap"><section class="account-card"><div class="account-head"><div><span style="color:#d9b45c;letter-spacing:.2em;font-size:.75rem">NESMA ACCOUNT</span><h1>حسابي</h1><p id="accountStatus">جارٍ التحقق من جلسة الدخول...</p></div><button class="main-btn" id="logoutButton" type="button">تسجيل الخروج</button></div><div id="accountContent" style="display:none"><div class="account-grid"><div class="account-stat"><span>الاسم</span><strong id="accountName"></strong></div><div class="account-stat"><span>البريد</span><strong id="accountEmail" style="font-size:1rem"></strong></div><div class="account-stat"><span>رصيد النقاط</span><strong id="points">0</strong></div><div class="account-stat"><span>الطلبات</span><strong id="orderCount">0</strong></div></div><div class="ref-box"><strong>نظام الإحالات</strong><p>شاركي رابطك مع صديقاتك، وتحصلين على نقاط عند التسجيل عبر رابطك.</p><div class="ref-link"><input id="refLink" readonly><button id="copyRef" type="button">نسخ</button></div></div><div class="account-orders"><h2>آخر الطلبات</h2><div id="orders"></div></div></div><a class="back-store" href="./">العودة إلى متجر نسمة</a></section></div>
-<script src="shared.js"></script><script>
-(async()=>{const API=window.Nesma.API_BASE,status=document.getElementById("accountStatus"),content=document.getElementById("accountContent");try{const r=await fetch(`${API}/api/account/summary`,{credentials:"include"}),d=await r.json();if(!r.ok)throw new Error(d.message||"غير مسجل الدخول");document.getElementById("accountName").textContent=d.user.name;document.getElementById("accountEmail").textContent=d.user.email;document.getElementById("points").textContent=Number(d.user.points||0).toLocaleString("ar-YE");document.getElementById("orderCount").textContent=d.orders.length;document.getElementById("refLink").value=`${location.origin}/login.html?ref=${encodeURIComponent(d.user.referral_code||"")}`;document.getElementById("orders").innerHTML=d.orders.length?d.orders.map(o=>`<div class="account-order"><div><strong>طلب ${o.id.slice(0,8).toUpperCase()}</strong><small>${new Date(o.created_at).toLocaleDateString("ar-YE")}</small></div><b>${window.Nesma.formatPrice(o.total_yer)}</b></div>`).join(""):"<p>لا توجد طلبات بعد.</p>";status.textContent="تم تسجيل الدخول بنجاح.";content.style.display="block";}catch(e){status.textContent=e.message||"غير مسجل الدخول";setTimeout(()=>location.href="login.html",1000);}document.getElementById("copyRef").onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById("refLink").value);document.getElementById("copyRef").textContent="تم النسخ";}catch(_){}};document.getElementById("logoutButton").onclick=async()=>{await fetch(`${API}/api/auth/logout`,{method:"POST",credentials:"include"});location.href="login.html";};})();
-</script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>حسابي | متجر نسمة</title>
+<link rel="stylesheet" href="login.css">
+</head>
+<body>
+<main class="auth-card" style="max-width:760px;grid-template-columns:1fr;">
+<section class="form-area">
+<div class="form-box">
+<div class="security-mark" aria-hidden="true">✦</div>
+<h2>حسابي</h2>
+<p class="hint" id="accountStatus">جارٍ التحقق من جلسة الدخول...</p>
+<div id="accountInfo" style="display:none;text-align:center;line-height:2">
+<p><strong id="accountName"></strong></p>
+<p id="accountEmail" style="color:#aaa"></p>
+<button class="main-btn" id="logoutButton" type="button">تسجيل الخروج</button>
+</div>
+<a class="back-store" href="./">العودة إلى المتجر</a>
+</div>
+</section>
+</main>
+<script>
+(async()=>{
+ const status=document.getElementById('accountStatus'), info=document.getElementById('accountInfo');
+ try{
+  const r=await fetch('https://nesma-store.onrender.com/api/auth/me',{credentials:'include'});
+  const d=await r.json();
+  if(!r.ok) throw new Error(d.message||'غير مسجل الدخول');
+  document.getElementById('accountName').textContent=d.user.name;
+  document.getElementById('accountEmail').textContent=d.user.email;
+  status.textContent='تم تسجيل الدخول بنجاح.';
+  info.style.display='block';
+ }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='login.html',1000); }
+ document.getElementById('logoutButton').onclick=async()=>{
+  await fetch('https://nesma-store.onrender.com/api/auth/logout',{method:'POST',credentials:'include'});
+  location.href='login.html';
+ };
+})();
+</script>
+</body></html>
