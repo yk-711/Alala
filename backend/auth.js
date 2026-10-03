@@ -261,8 +261,9 @@ export function authenticate(req, res, next) {
 }
 
 function googleClient() {
-  const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL } = process.env;
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) return null;
+  const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+  const GOOGLE_CALLBACK_URL = String(process.env.GOOGLE_CALLBACK_URL || "https://nesma-store.onrender.com/api/auth/google/callback").trim();
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) return null;
   return new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL);
 }
 
@@ -378,7 +379,7 @@ export async function googleCallback(req, res) {
       user = result.rows[0];
       await query(
         `UPDATE users
-         SET provider='google', provider_id=$1, email_verified=$2, referral_code=COALESCE(referral_code,$3), updated_at=NOW()
+         SET provider='google', provider_id=$1, email_verified=$2, referral_code=COALESCE(referral_code,$4), updated_at=NOW()
          WHERE id=$3`,
         [googleId, emailVerified, user.id, makeReferralCode()]
       );
