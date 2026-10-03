@@ -12,6 +12,8 @@
   const overlay = document.getElementById('searchOv');
   const closeSearch = document.getElementById('searchClose');
 
+  const referral=new URLSearchParams(location.search).get('ref'); if(referral&&/^NESMA-[A-Z0-9]+$/i.test(referral)) localStorage.setItem('nesma-referral-code',referral.toUpperCase());
+
   accountBtn?.addEventListener('click', async e => {
     e.preventDefault();
     try { const r = await fetch(`${API}/api/auth/me`, {credentials:'include'}); location.href = r.ok ? 'account.html' : 'login.html'; }
@@ -19,15 +21,16 @@
   });
   cartFab?.addEventListener('click', () => { location.href = 'cart.html'; });
 
-  const currencyRates = { sar: 1, yer: 65, usd: 0.2667 };
+  const isHomePage = /(?:^|\/)index\.html?$/.test(location.pathname) || location.pathname.endsWith('/');
+  const currencyRates = isHomePage ? { sar: 1, yer: 65, usd: 0.2667 } : { yer: 1, sar: 1/140, usd: 1/532 };
   const currencyLabels = { sar: 'ر.س', yer: 'ر.ي', usd: '$' };
-  let activeCurrency = localStorage.getItem('nesma-currency') || 'sar';
+  let activeCurrency = localStorage.getItem('nesma-currency') || (isHomePage ? 'sar' : 'yer');
   const numberPrice = value => { const m=String(value??'').replace(/,/g,'').match(/[0-9]+(?:\.[0-9]+)?/); return m?Number(m[0]):0; };
-  const priceText = sarPrice => { const v=numberPrice(sarPrice)*currencyRates[activeCurrency]; return `${activeCurrency==='yer'?Math.round(v).toLocaleString('en-US'):v.toFixed(2)} ${currencyLabels[activeCurrency]}`; };
+  const priceText = basePrice => { const v=numberPrice(basePrice)*currencyRates[activeCurrency]; return `${activeCurrency==='yer'?Math.round(v).toLocaleString('en-US'):v.toFixed(2)} ${currencyLabels[activeCurrency]}`; };
   function refreshPrices(){ document.querySelectorAll('.mcard').forEach(card=>{ const p=card.querySelector('.mprice'); if(p)p.textContent=priceText(card.dataset.price); const o=card.querySelector('.mold'); if(o&&card.dataset.old)o.textContent=priceText(card.dataset.old); }); }
-  function syncCurrency(){ if(currencySelect)currencySelect.value=activeCurrency; if(currencyShort)currencyShort.textContent=currencyLabels[activeCurrency]; refreshPrices(); }
+  function syncCurrency(){ if(currencySelect)currencySelect.value=activeCurrency; if(currencyShort)currencyShort.textContent=currencyLabels[activeCurrency]; if(isHomePage)refreshPrices(); }
   currencySelect?.addEventListener('change',e=>{activeCurrency=e.target.value;localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
-  currencyToggle?.addEventListener('click',()=>{const order=['sar','yer','usd'];activeCurrency=order[(order.indexOf(activeCurrency)+1)%order.length];localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
+  currencyToggle?.addEventListener('click',()=>{const order=isHomePage?['sar','yer','usd']:['yer','sar','usd'];activeCurrency=order[(order.indexOf(activeCurrency)+1)%order.length];localStorage.setItem('nesma-currency',activeCurrency);syncCurrency();});
   syncCurrency();
 
   function setMobileNav(open){ if(!navMenu||!navToggle||!navBackdrop)return; const next=window.innerWidth<992&&open; navMenu.classList.toggle('show',next);navMenu.classList.toggle('mobile-open',next);navBackdrop.classList.toggle('show',next);navBackdrop.setAttribute('aria-hidden',String(!next));navToggle.setAttribute('aria-expanded',String(next));document.body.classList.toggle('nav-locked',next); }

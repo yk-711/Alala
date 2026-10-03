@@ -14,7 +14,7 @@
 <p class="hint" id="accountStatus">جارٍ التحقق من جلسة الدخول...</p>
 <div id="accountInfo" style="display:none;text-align:center;line-height:2">
 <p><strong id="accountName"></strong></p>
-<p id="accountEmail" style="color:#aaa"></p>
+<p id="accountEmail" style="color:#aaa"></p><p>النقاط: <strong id="accountPoints">0</strong></p><p>رمز الإحالة: <strong id="refCode">—</strong></p><p><input id="refLink" readonly style="width:100%;padding:10px;background:#111;color:#fff;border:1px solid #403722;border-radius:10px"></p><div id="orders" style="text-align:right;margin-top:20px"></div>
 <button class="main-btn" id="logoutButton" type="button">تسجيل الخروج</button>
 </div>
 <a class="back-store" href="./">العودة إلى المتجر</a>
@@ -28,8 +28,13 @@
   const r=await fetch('https://nesma-store.onrender.com/api/auth/me',{credentials:'include'});
   const d=await r.json();
   if(!r.ok) throw new Error(d.message||'غير مسجل الدخول');
-  document.getElementById('accountName').textContent=d.user.name;
-  document.getElementById('accountEmail').textContent=d.user.email;
+  const s=await fetch('https://nesma-store.onrender.com/api/account/summary',{credentials:'include'}); const summary=await s.json(); if(!s.ok) throw new Error(summary.message||'تعذر تحميل الحساب');
+  document.getElementById('accountName').textContent=summary.user.name;
+  document.getElementById('accountEmail').textContent=summary.user.email;
+  document.getElementById('accountPoints').textContent=Number(summary.user.points||0).toLocaleString('en-US');
+  document.getElementById('refCode').textContent=summary.user.referral_code||'—';
+  document.getElementById('refLink').value=summary.referralLink||'';
+  document.getElementById('orders').innerHTML='<h3>الطلبات السابقة</h3>'+((summary.orders||[]).map(o=>`<div style="border:1px solid #30291d;border-radius:12px;padding:12px;margin:8px 0"><strong>${o.id}</strong><br>الحالة: ${o.status}<br>الإجمالي: ${Number(o.total_yer).toLocaleString('en-US')} ر.ي</div>`).join('')||'<p style="color:#999">لا توجد طلبات بعد.</p>');
   status.textContent='تم تسجيل الدخول بنجاح.';
   info.style.display='block';
  }catch(e){ status.textContent=e.message||'غير مسجل الدخول'; setTimeout(()=>location.href='login.html',1000); }
