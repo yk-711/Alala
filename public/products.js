@@ -17,6 +17,16 @@
             <div class="mbody"><div class="mcat">${escapeHtml(p.category)}</div><div class="mtit">${escapeHtml(p.title)}</div><div class="mdesc">${escapeHtml(p.description||'')}</div><div class="mfoot"><div><div class="mprice">${NesmaShop.money(Number(p.price))} ${old}</div><div class="mstars"><i class="fas fa-star"></i> <span style="color:#bbb;font-size:.7rem;">(${Number(p.reviews||0)})</span></div></div><button class="madd" title="تفاصيل المنتج"><i class="fas fa-plus"></i></button></div></div>
           </div></div>`;
       }).join('');
+      grid.querySelectorAll('.mcard').forEach(card => {
+        card.addEventListener('click', (event) => {
+          if (event.target.closest('button, a, input, select, textarea, [data-no-product-link]')) return;
+          const id = card.dataset.id;
+          if (id) window.location.href = `product.html?id=${encodeURIComponent(id)}`;
+        });
+        card.style.cursor = 'pointer';
+        const addButton = card.querySelector('.madd');
+        if (addButton) addButton.addEventListener('click', (event) => event.stopPropagation());
+      });
     } catch (e) { console.warn('Products API unavailable; showing built-in products.', e); }
   });
   function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
