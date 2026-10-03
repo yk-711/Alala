@@ -207,6 +207,18 @@ async function ensureOrderSchema() {
         color VARCHAR(100) NOT NULL DEFAULT '',
         fabric VARCHAR(100) NOT NULL DEFAULT ''
       )`);
+      // Migrate legacy order_items tables created by older versions of the store.
+      // CREATE TABLE IF NOT EXISTS does not modify an existing table, so every
+      // column used by checkout/account/admin must also be added explicitly.
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS product_id UUID REFERENCES products(id) ON DELETE SET NULL`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT ''`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT ''`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS price_yer NUMERIC(12,2) NOT NULL DEFAULT 0`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS quantity INTEGER NOT NULL DEFAULT 1`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS size VARCHAR(100) NOT NULL DEFAULT ''`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS color VARCHAR(100) NOT NULL DEFAULT ''`);
+      await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS fabric VARCHAR(100) NOT NULL DEFAULT ''`);
+      await query(`CREATE INDEX IF NOT EXISTS order_items_order_idx ON order_items(order_id)`);
     })().catch(error => {
       orderSchemaReady = null;
       throw error;
@@ -335,6 +347,15 @@ async function ensureProductTable(){
   await query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS referral_code VARCHAR(32)`);
   await query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS referral_user_id UUID REFERENCES users(id) ON DELETE SET NULL`);
   await query(`CREATE TABLE IF NOT EXISTS order_items(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,product_id UUID REFERENCES products(id) ON DELETE SET NULL,name VARCHAR(200) NOT NULL,image_url TEXT NOT NULL DEFAULT '',price_yer NUMERIC(12,2) NOT NULL DEFAULT 0,quantity INTEGER NOT NULL DEFAULT 1,size VARCHAR(100) NOT NULL DEFAULT '',color VARCHAR(100) NOT NULL DEFAULT '',fabric VARCHAR(100) NOT NULL DEFAULT '')`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS product_id UUID REFERENCES products(id) ON DELETE SET NULL`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT ''`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT ''`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS price_yer NUMERIC(12,2) NOT NULL DEFAULT 0`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS quantity INTEGER NOT NULL DEFAULT 1`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS size VARCHAR(100) NOT NULL DEFAULT ''`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS color VARCHAR(100) NOT NULL DEFAULT ''`);
+  await query(`ALTER TABLE order_items ADD COLUMN IF NOT EXISTS fabric VARCHAR(100) NOT NULL DEFAULT ''`);
+  await query(`CREATE INDEX IF NOT EXISTS order_items_order_idx ON order_items(order_id)`);
   await query(`CREATE TABLE IF NOT EXISTS points_ledger(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,points INTEGER NOT NULL,reason VARCHAR(100) NOT NULL,order_id UUID REFERENCES orders(id) ON DELETE SET NULL,referral_user_id UUID REFERENCES users(id) ON DELETE SET NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
   await query(`CREATE UNIQUE INDEX IF NOT EXISTS points_ledger_order_reason_idx ON points_ledger(user_id,order_id,reason) WHERE order_id IS NOT NULL`);
   await query(`CREATE TABLE IF NOT EXISTS notifications(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),title VARCHAR(200) NOT NULL,message TEXT NOT NULL DEFAULT '',type VARCHAR(30) NOT NULL DEFAULT 'info',active BOOLEAN NOT NULL DEFAULT TRUE,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
