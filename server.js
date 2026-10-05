@@ -79,10 +79,78 @@ function htmlReport(title,content){return `<!doctype html><html dir="rtl"><head>
 function datePlus(date,days){const d=new Date(`${date}T12:00:00Z`);d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)}
 function dateDiffDays(from,to){const a=new Date(`${from}T12:00:00Z`),b=new Date(`${to}T12:00:00Z`);return Math.floor((b-a)/86400000)}
 function employeeEligibleOn(e,date){return e.type==='راتب شهري' && e.start_date && date>=String(e.start_date).slice(0,10) && (!e.end_date || date<=String(e.end_date).slice(0,10))}
-async function accrueEmployeeDay(e,date,userId){if(!employeeEligibleOn(e,date))return {salary:false,allowance:false,paidAllowance:false};let salary=false,allowance=false,paidAllowance=false;const amount=money(Number(e.monthly_salary)/30);if(amount>0){const row=await postLedger({employee_id:e.id,date,type:'استحقاق راتب يومي',desc:`استحقاق راتب يومي ${date}`,amount,direction:'credit',refType:'daily_salary',refId:e.id,key:`salary:${e.id}:${date}`,userId});salary=!!row}const a=await one('INSERT INTO daily_allowances(employee_id,allowance_date,limit_amount,earned_amount,created_by) VALUES($1,$2,$3,$3,$4) ON CONFLICT(employee_id,allowance_date) DO UPDATE SET limit_amount=EXCLUDED.limit_amount,earned_amount=EXCLUDED.earned_amount WHERE daily_allowances.paid_amount=0 AND daily_allowances.recovered_amount=0 RETURNING *',[e.id,date,money(e.daily_allowance_limit||0),userId]);if(a&&Number(a.earned_amount)>0){await postLedger({employee_id:e.id,date,type:'صرفة يومية',desc:`استحقاق صرفة يومية ${date}`,amount:a.earned_amount,direction:'credit',refType:'daily_allowance',refId:a.id,key:`allowance:${e.id}:${date}`,userId});allowance=true;if(Number(a.paid_amount)===0){const paid=await one("UPDATE daily_allowances SET paid_amount=earned_amount,status='مدفوعة' WHERE id=$1 AND paid_amount=0 AND recovered_amount=0 RETURNING *",[a.id]);if(paid){await postLedger({employee_id:e.id,date,type:'صرف صرفة يومية',desc:`صرف الصرفة اليومية ${date}`,amount:paid.earned_amount,direction:'debit',refType:'allowance_payment',refId:paid.id,key:`allowance-payment:${paid.id}`,userId});paidAllowance=true}}}return {salary,allowance,paidAllowance}}
+async function accrueEmployeeDay(e,date,userId){
+  if(!employeeEligibleOn(e,date)) return {salary:false,allowance:false,paidAllowance:false};
+  let salary=false, allowance=false, paidAllowance=false;
+  const amount=money(Number(e.monthly_salary||0)/30);
+  if(amount>0){
+    const row=await postLedger({employee_id:e.id,date,type:'استحقاق راتب يومي',desc:`استحقاق راتب يومي ${date}`,amount,direction:'credit',refType:'daily_salary',refId:e.id,key:`salary:${e.id}:${date}`,userId});
+    salary=!!row;
+  }
+  const limit=money(Number(e.daily_allowance_limit||0));
+  const a=await one(`INSERT INTO daily_allowances(employee_id,allowance_date,limit_amount,earned_amount,paid_amount,status,created_by)
+    VALUES($1,$2,$3,$3,0,CASE WHEN $3>0 THEN 'مستحقة' ELSE 'بدون صرفة' END,$4)
+    ON CONFLICT(employee_id,allowance_date) DO UPDATE SET limit_amount=EXCLUDED.limit_amount,earned_amount=EXCLUDED.earned_amount
+    WHERE daily_allowances.paid_amount=0 AND daily_allowances.recovered_amount=0
+    RETURNING *`,[e.id,date,limit,userId]);
+  if(a && limit>0){
+    allowance=true;
+    if(Number(a.paid_amount)===0){
+      const paid=await one(`UPDATE daily_allowances SET paid_amount=earned_amount,status='مدفوعة' WHERE id=$1 AND paid_amount=0 AND recovered_amount=0 RETURNING *`,[a.id]);
+      if(paid){
+        // الصرفة سلفة/دفعة تخصم من مستحق الراتب، لذلك تسجل كمدين فقط.
+        await postLedger({employee_id:e.id,date,type:'صرف صرفة يومية',desc:`خصم الصرفة اليومية ${date}`,amount:paid.earned_amount,direction:'debit',refType:'allowance_payment',refId:paid.id,key:`allowance-payment:${paid.id}`,userId});
+        paidAllowance=true;
+      }
+    }
+  }
+  return {salary,allowance,paidAllowance};
+}
 async function runDaily(date,userId){const key=`daily:${date}`;const existing=await one('SELECT * FROM jobs WHERE job_key=$1',[key]);if(existing?.status==='success')return existing.result;const job=await one("INSERT INTO jobs(job_key,job_date,status,started_at) VALUES($1,$2,$3,NOW()) ON CONFLICT(job_key) DO UPDATE SET status='running',started_at=NOW() RETURNING *",[key,date,'running']);let salary=0,allowance=0;try{const employees=await q("SELECT * FROM employees WHERE status='نشط' AND type='راتب شهري' AND start_date IS NOT NULL AND start_date <= $1 AND (end_date IS NULL OR end_date >= $1)",[date]);for(const e of employees){const r=await accrueEmployeeDay(e,date,userId);if(r.salary)salary++;if(r.allowance)allowance++}const result={jobKey:key,salary,allowance,status:'success',date};await exec("UPDATE jobs SET status='success',result=$1,finished_at=NOW() WHERE id=$2",[result,job.id]);await audit(userId,'RUN','job',job.id,null,result);return result}catch(e){await exec("UPDATE jobs SET status='failed',error=$1,finished_at=NOW() WHERE id=$2",[e.message,job.id]);throw e}}
+async function repairLegacyAllowanceAccounting(){
+  // النسخ السابقة كانت تسجل الصرفة كإضافة ثم كدفع، فيصبح أثرها صفرًا.
+  // نحافظ على القيد القديم للتدقيق ولكن نلغيه محاسبيًا، ونضمن وجود قيد الخصم.
+  const oldCredits=await q("SELECT l.* FROM ledger l WHERE l.reference_type='daily_allowance' AND l.status<>'ملغاة'");
+  for(const l of oldCredits){
+    await exec("UPDATE ledger SET status='ملغاة',updated_at=NOW(),notes=COALESCE(notes,'') || ' | تصحيح آلي: الصرفة اليومية خصم وليست إضافة' WHERE id=$1",[l.id]);
+  }
+  const rows=await q("SELECT * FROM daily_allowances WHERE paid_amount>0 AND recovered_amount=0");
+  for(const a of rows){
+    const exists=await one("SELECT id FROM ledger WHERE reference_type='allowance_payment' AND reference_id=$1 AND status<>'ملغاة'",[String(a.id)]);
+    if(exists)continue;
+    try{
+      await postLedger({employee_id:a.employee_id,date:String(a.allowance_date).slice(0,10),type:'صرف صرفة يومية',desc:`خصم الصرفة اليومية ${String(a.allowance_date).slice(0,10)} (تصحيح)`,amount:a.paid_amount,direction:'debit',refType:'allowance_payment',refId:a.id,key:`allowance-payment:${a.id}`,userId:null});
+    }catch(e){
+      console.error(`Allowance repair skipped ${a.id}:`,e.message);
+    }
+  }
+}
+
 async function normalizeEmployeeStartDates(){await exec("UPDATE employees SET start_date=COALESCE(start_date,created_at::date), updated_at=COALESCE(updated_at,NOW()) WHERE status='نشط' AND start_date IS NULL")}
-async function catchUpDaily(userId=null){await normalizeEmployeeStartDates();const today=localDate();const rows=await q("SELECT * FROM employees WHERE status='نشط' AND type='راتب شهري' AND start_date IS NOT NULL AND start_date <= $1 AND (end_date IS NULL OR end_date >= $1)",[today]);const result={employees:rows.length,days:0,salary:0,allowance:0,paidAllowance:0,errors:[]};for(const e of rows){const start=String(e.start_date).slice(0,10);const end=e.end_date&&String(e.end_date).slice(0,10)<today?String(e.end_date).slice(0,10):today;const days=Math.max(0,dateDiffDays(start,end));for(let i=0;i<=days;i++){const date=datePlus(start,i);try{const r=await accrueEmployeeDay(e,date,userId);result.days++;if(r.salary)result.salary++;if(r.allowance)result.allowance++;if(r.paidAllowance)result.paidAllowance++}catch(err){result.errors.push({employee_id:e.id,date,error:err.message});console.error(`Daily accrual skipped for employee ${e.id} on ${date}:`,err.message)}}}return result}
+async function catchUpDaily(userId=null){
+  await normalizeEmployeeStartDates();
+  const today=localDate();
+  const rows=await q("SELECT * FROM employees WHERE status='نشط' AND type='راتب شهري' AND start_date IS NOT NULL AND start_date <= $1 AND (end_date IS NULL OR end_date >= $1)",[today]);
+  const result={employees:rows.length,days:0,salary:0,allowance:0,paidAllowance:0,errors:[]};
+  for(const e of rows){
+    const start=String(e.start_date).slice(0,10);
+    const end=e.end_date&&String(e.end_date).slice(0,10)<today?String(e.end_date).slice(0,10):today;
+    const count=Math.max(0,dateDiffDays(start,end)+1);
+    for(let i=0;i<count;i++){
+      const date=datePlus(start,i);
+      try{
+        const r=await accrueEmployeeDay(e,date,userId);
+        result.days++;
+        if(r.salary)result.salary++;
+        if(r.allowance)result.allowance++;
+        if(r.paidAllowance)result.paidAllowance++;
+      }catch(err){
+        result.errors.push({employee_id:e.id,employee:e.name,date,error:err.message});
+      }
+    }
+  }
+  return result;
+}
 function scheduleDaily(){const check=async()=>{const localTime=new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());if(localTime==='23:59'){try{await runDaily(localDate(),null)}catch(e){console.error('Automatic daily payroll failed:',e.message)}}};setInterval(check,60000);check().catch(()=>{})}
 async function handler(req,res){try{const u=new URL(req.url,`http://${req.headers.host}`),p=u.pathname,method=req.method;if(method==='OPTIONS'){res.writeHead(204,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type'});return res.end()}
 if(p==='/api/health')return json(res,200,{ok:true,time:now(),db:'postgresql',version:'4.0.0'});
@@ -107,7 +175,7 @@ if(p==='/api/production'&&method==='GET'){await requirePerm(req,'production.mana
 if(p==='/api/production'&&method==='POST'){const user=await requirePerm(req,'production.manage'),b=await body(req),item=b.item_id?await one('SELECT * FROM production_items WHERE id=$1',[b.item_id]):null,qty=Number(b.quantity||0),price=money(b.price_per_unit??item?.default_price??0);if(qty<=0)throw Error('الكمية يجب أن تكون أكبر من صفر');const r=await one('INSERT INTO production_logs(employee_id,item_id,work_date,item_name,quantity,price_per_unit,total_price,work_order_ref,created_by,notes) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',[b.employee_id,b.item_id||null,b.work_date||localDate(),item?.name||b.item_name,qty,price,money(qty*price),b.work_order_ref||null,user.id,b.notes||null]);await audit(user.id,'CREATE','production',r.id,null,r);return json(res,201,r)}
 if(p==='/api/production/invoice'&&method==='POST'){const user=await requirePerm(req,'production.manage'),b=await body(req),client=await pool.connect();try{await client.query('BEGIN');const rows=(await client.query("SELECT * FROM production_logs WHERE employee_id=$1 AND work_date BETWEEN $2 AND $3 AND is_invoiced=false AND status='مسجلة' FOR UPDATE",[b.employee_id,b.from_date,b.to_date])).rows;if(!rows.length)throw Error('لا يوجد إنتاج غير مفوتر في الفترة');const total=money(rows.reduce((a,x)=>a+Number(x.total_price),0)),disc=money(b.discount||0);if(disc>total)throw Error('الخصم أكبر من الإجمالي');const r=(await client.query('INSERT INTO production_invoices(invoice_no,employee_id,from_date,to_date,total,discount,net_total,status,created_by,approved_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW()) RETURNING *',[`INV-${Date.now()}`,b.employee_id,b.from_date,b.to_date,total,disc,total-disc,'معتمدة',user.id])).rows[0];for(const x of rows)await client.query('UPDATE production_logs SET is_invoiced=true,invoice_id=$1 WHERE id=$2',[r.id,x.id]);await client.query('COMMIT');await postLedger({employee_id:r.employee_id,date:r.to_date,type:'فاتورة إنتاج',desc:`فاتورة إنتاج ${r.invoice_no}`,amount:r.net_total,direction:'credit',refType:'production_invoice',refId:r.id,key:`invoice:${r.id}`,userId:user.id});await audit(user.id,'CREATE','production_invoice',r.id,null,r);return json(res,201,r)}catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}}
 if(p==='/api/production/invoices'&&method==='GET'){await requirePerm(req,'production.manage');return json(res,200,await q('SELECT i.*,e.name employee_name FROM production_invoices i JOIN employees e ON e.id=i.employee_id ORDER BY i.id DESC'))}
-if(p==='/api/allowances'&&method==='GET'){const user=await requirePerm(req,'allowances.manage');await catchUpDaily(user.id);return json(res,200,await q("SELECT e.id employee_id,e.name employee_name,e.code employee_code,e.status employee_status,e.start_date,e.daily_allowance_limit,COALESCE(a.allowance_date,$1::date) allowance_date,COALESCE(a.limit_amount,e.daily_allowance_limit,0) limit_amount,COALESCE(a.earned_amount,0) earned_amount,COALESCE(a.paid_amount,0) paid_amount,COALESCE(a.recovered_amount,0) recovered_amount,COALESCE(a.status,CASE WHEN COALESCE(e.daily_allowance_limit,0)>0 THEN 'مستحقة' ELSE 'بدون صرفة' END) status,a.id FROM employees e LEFT JOIN LATERAL (SELECT * FROM daily_allowances da WHERE da.employee_id=e.id ORDER BY allowance_date DESC,id DESC LIMIT 1) a ON true WHERE e.status='نشط' AND e.type='راتب شهري' ORDER BY e.id DESC",[localDate()]))}
+if(p==='/api/allowances'&&method==='GET'){const user=await requirePerm(req,'allowances.manage');const sync=await catchUpDaily(user.id);const rows=await q("SELECT e.id employee_id,e.name employee_name,e.code employee_code,e.status employee_status,e.start_date,e.daily_allowance_limit,COALESCE(a.allowance_date,$1::date) allowance_date,COALESCE(a.limit_amount,e.daily_allowance_limit,0) limit_amount,COALESCE(a.earned_amount,0) earned_amount,COALESCE(a.paid_amount,0) paid_amount,COALESCE(a.recovered_amount,0) recovered_amount,COALESCE(a.status,CASE WHEN COALESCE(e.daily_allowance_limit,0)>0 THEN 'مستحقة' ELSE 'بدون صرفة' END) status,a.id FROM employees e LEFT JOIN LATERAL (SELECT * FROM daily_allowances da WHERE da.employee_id=e.id ORDER BY allowance_date DESC,id DESC LIMIT 1) a ON true WHERE e.status='نشط' AND e.type='راتب شهري' ORDER BY e.id DESC",[localDate()]);return json(res,200,{rows,sync})}
 if(p==='/api/allowances/run'&&method==='POST'){const user=await requirePerm(req,'allowances.manage'),b=await body(req);return json(res,200,await runDaily(b.date||localDate(),user.id))}
 if(p==='/api/payroll/sync'&&method==='POST'){const user=await requirePerm(req,'allowances.manage');const result=await catchUpDaily(user.id);return json(res,200,{ok:true,message:'تم تحديث الرواتب والصرفات السابقة واليوم',result})}
 if(p.match(/^\/api\/allowances\/\d+\/pay$/)&&method==='POST'){const user=await requirePerm(req,'allowances.manage'),id=Number(p.split('/')[3]),a=await one('SELECT * FROM daily_allowances WHERE id=$1',[id]);if(!a)throw Error('الصرفة غير موجودة');if(Number(a.paid_amount)>0)throw Error('تم تسجيل الصرف مسبقًا');const r=await one("UPDATE daily_allowances SET paid_amount=earned_amount,status='مدفوعة' WHERE id=$1 RETURNING *",[id]);await postLedger({employee_id:a.employee_id,date:a.allowance_date,type:'صرف صرفة يومية',desc:'صرف الصرفة اليومية',amount:a.earned_amount,direction:'debit',refType:'allowance_payment',refId:id,key:`allowance-payment:${id}`,userId:user.id});await audit(user.id,'PAY','allowance',id,a,r);return json(res,200,r)}
@@ -137,4 +205,4 @@ if(p==='/api/reports/export'&&method==='GET'){await requirePerm(req,'reports.exp
 if(p==='/api/report/print'&&method==='GET'){await requirePerm(req,'reports.view');const type=u.searchParams.get('type')||'employees';const rows=await q(type==='ledger'?'SELECT l.*,e.name employee_name FROM ledger l JOIN employees e ON e.id=l.employee_id ORDER BY l.id DESC':type==='production'?'SELECT p.*,e.name employee_name FROM production_logs p JOIN employees e ON e.id=p.employee_id ORDER BY p.id DESC':'SELECT * FROM employees');const cols=rows.length?Object.keys(rows[0]):[];return sendHtml(res,htmlReport('تقرير '+type,`<table><thead><tr>${cols.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]??''}</td>`).join('')}</tr>`).join('')}</tbody></table>`))}
 if(method==='GET'){let file=p==='/'?path.join(publicDir,'index.html'):path.join(publicDir,p);if(!fs.existsSync(file)||fs.statSync(file).isDirectory())file=path.join(publicDir,'index.html');const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8'};res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'text/plain; charset=utf-8'});return fs.createReadStream(file).pipe(res)}return json(res,404,{error:'Not found'});
 }catch(e){console.error(e);return json(res,e.status||400,{error:e.message||'حدث خطأ'})}}
-init().then(async()=>{try{await catchUpDaily()}catch(e){console.error('Initial daily payroll catch-up failed:',e.message)}scheduleDaily();http.createServer(handler).listen(PORT,()=>console.log(`Accounting System 4.0 running on port ${PORT}`));}).catch(e=>{console.error('Database initialization failed:',e);process.exit(1)});
+init().then(async()=>{try{await repairLegacyAllowanceAccounting();await catchUpDaily()}catch(e){console.error('Initial daily payroll catch-up failed:',e.message)}scheduleDaily();http.createServer(handler).listen(PORT,()=>console.log(`Accounting System 4.0 running on port ${PORT}`));}).catch(e=>{console.error('Database initialization failed:',e);process.exit(1)});
